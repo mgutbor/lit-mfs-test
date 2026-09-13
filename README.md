@@ -44,6 +44,9 @@ Arquitectura de microfrontends basada en Lit 3 y Import Maps nativos del navegad
 | [05-security.md](./docs/05-security.md) | Seguridad, CSP, aislamiento, validación |
 | [06-data-fetching.md](./docs/06-data-fetching.md) | Consumo de datos via API: config-map, @lit/task, loading/error states |
 | [07-component-guidelines.md](./docs/07-component-guidelines.md) | Guía de arquitectura de componentes: MVVM, naming, estructura, eventos |
+| [08-user-stories.md](./docs/08-user-stories.md) | User stories del proyecto (6 stories) |
+| [09-backlog.md](./docs/09-backlog.md) | Product Backlog priorizado con MoSCoW |
+| [10-tickets.md](./docs/10-tickets.md) | Work tickets para US-01 con estimación en horas |
 
 ## Desarrollo local
 

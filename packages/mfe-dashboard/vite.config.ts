@@ -11,17 +11,15 @@ export default defineConfig({
     }),
   ],
   build: {
+    target: 'es2022',
+    modulePreload: { polyfill: false },
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es'],
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['lit', '@lit/context', '@lit/task', '@lit-mf/shared'],
-      output: {
-        preserveModules: true,
-        entryFileNames: '[name].js',
-      },
+      external: ['lit', 'lit/', '@lit/context', '@lit/task', '@lit-mf/shared'],
     },
   },
   server: {

@@ -45,8 +45,22 @@ interface MfeContext {
   /** Event bus compartido para comunicación entre MFEs */
   eventBus: EventBus;
   
+  /** Configuración de endpoints API para este MFE (desde config-map.json) */
+  config: Record<string, EndpointConfig>;
+  
   /** Token de autenticación (solo para MFEs que lo necesiten) */
   authToken?: string;
+}
+
+interface EndpointConfig {
+  /** Ruta del endpoint (relativa a baseUrl del config-map) */
+  endpoint: string;
+  /** Método HTTP */
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  /** Timeout en milisegundos */
+  timeout: number;
+  /** Headers por defecto (opcional) */
+  headers?: Record<string, string>;
 }
 
 interface EventBus {
@@ -55,6 +69,8 @@ interface EventBus {
   emit(event: string, detail?: unknown): void;
 }
 ```
+
+**Nota:** El campo `config` se inyecta desde el `config-map.json` (ver [06-data-fetching.md](./06-data-fetching.md)). El shell carga el config map completo y pasa **solo la sección del MFE** en `context.config`.
 
 ## Atributos del custom element
 
@@ -217,7 +233,15 @@ export interface MfeContext {
   theme: 'light' | 'dark' | 'auto';
   user: MfeUser;
   eventBus: EventBus;
+  config: Record<string, EndpointConfig>;
   authToken?: string;
+}
+
+export interface EndpointConfig {
+  endpoint: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  timeout: number;
+  headers?: Record<string, string>;
 }
 
 export interface MfeUser {

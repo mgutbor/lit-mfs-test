@@ -26,8 +26,15 @@ export class MfeSettings extends LitElement {
   }
 
   render() {
-    const name = this._context?.config?.name ?? 'settings';
-    return html`<h2>Settings MFE</h2><p>Context: ${name}</p>`;
+    const locale = this._context?.locale ?? 'es';
+    const theme = this._context?.theme ?? 'light';
+    const route = this._context?.route ?? '/';
+    return html`
+      <h2>Settings MFE</h2>
+      <p>Locale: ${locale}</p>
+      <p>Theme: ${theme}</p>
+      <p>Route: ${route}</p>
+    `;
   }
 }
 

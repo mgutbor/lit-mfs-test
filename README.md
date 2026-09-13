@@ -47,6 +47,7 @@ Arquitectura de microfrontends basada en Lit 3 y Import Maps nativos del navegad
 | [08-user-stories.md](./docs/08-user-stories.md) | User stories del proyecto (6 stories) |
 | [09-backlog.md](./docs/09-backlog.md) | Product Backlog priorizado con MoSCoW |
 | [10-tickets.md](./docs/10-tickets.md) | Work tickets para US-01 con estimación en horas |
+| [11-implementation-plan.md](./docs/11-implementation-plan.md) | Plan de implementación por fases con cronograma |
 
 ## Desarrollo local
 

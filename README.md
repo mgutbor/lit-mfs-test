@@ -37,11 +37,12 @@ Arquitectura de microfrontends basada en Lit 3 y Import Maps nativos del navegad
 
 | Documento | Contenido |
 |-----------|-----------|
-| [01-architecture.md](./01-architecture.md) | Estructura del monorepo, Vite library mode, import maps, gestión de versiones |
-| [02-mfe-contract.md](./02-mfe-contract.md) | Contract de cada MFE: mount/unmount, atributos, eventos, tipos |
-| [03-communication.md](./03-communication.md) | Comunicación MFE ↔ Host y entre MFEs |
-| [04-routing.md](./04-routing.md) | Routing del shell y routing interno de MFEs |
-| [05-security.md](./05-security.md) | Seguridad, CSP, aislamiento, validación |
+| [01-architecture.md](./docs/01-architecture.md) | Estructura del monorepo, Vite library mode, import maps, gestión de versiones |
+| [02-mfe-contract.md](./docs/02-mfe-contract.md) | Contract de cada MFE: mount/unmount, atributos, eventos, tipos |
+| [03-communication.md](./docs/03-communication.md) | Comunicación MFE ↔ Host y entre MFEs |
+| [04-routing.md](./docs/04-routing.md) | Routing del shell y routing interno de MFEs |
+| [05-security.md](./docs/05-security.md) | Seguridad, CSP, aislamiento, validación |
+| [06-data-fetching.md](./docs/06-data-fetching.md) | Consumo de datos via API: config-map, @lit/task, loading/error states |
 
 ## Desarrollo local
 

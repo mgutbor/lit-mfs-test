@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MFE Dashboard - Test</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; }
+    .test-container { padding: 20px; }
+    .test-controls { margin-bottom: 20px; padding: 10px; background: #f5f5f5; }
+    button { margin-right: 10px; padding: 8px 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="test-controls">
+    <h3>MFE Dashboard Test</h3>
+    <button id="btn-mount">Mount</button>
+    <button id="btn-unmount">Unmount</button>
+    <button id="btn-change-theme">Toggle Theme</button>
+  </div>
+  <div id="mfe-container" class="test-container"></div>
+
+  <script type="module">
+    import { mount, unmount } from './src/entry.ts';
+
+    let cleanup = null;
+    let currentTheme = 'light';
+
+    document.getElementById('btn-mount').addEventListener('click', () => {
+      const container = document.getElementById('mfe-container');
+      cleanup = mount(container, {
+        locale: 'es',
+        theme: currentTheme,
+        route: '/dashboard',
+        container,
+        config: { name: 'dashboard', baseUrl: '/' },
+        onNavigate: (path) => console.log('Navigate to:', path),
+        publish: (topic, data) => console.log('Publish:', topic, data),
+        subscribe: (topic, handler) => {
+          console.log('Subscribe to:', topic);
+          return () => console.log('Unsubscribe from:', topic);
+        },
+      });
+      console.log('MFE mounted');
+    });
+
+    document.getElementById('btn-unmount').addEventListener('click', () => {
+      if (cleanup) {
+        cleanup();
+        cleanup = null;
+        console.log('MFE unmounted');
+      }
+    });
+
+    document.getElementById('btn-change-theme').addEventListener('click', () => {
+      currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+      console.log('Theme changed to:', currentTheme);
+    });
+  </script>
+</body>
+</html>

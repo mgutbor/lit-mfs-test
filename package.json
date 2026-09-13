@@ -1,0 +1,23 @@
+{
+  "name": "lit-mf-test",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Microfrontends con Lit 3 y Import Maps nativos",
+  "scripts": {
+    "dev": "concurrently \"pnpm:dev:*\"",
+    "dev:shell": "pnpm --filter shell dev",
+    "dev:shared": "pnpm --filter shared dev",
+    "dev:dashboard": "pnpm --filter mfe-dashboard dev",
+    "dev:settings": "pnpm --filter mfe-settings dev",
+    "build": "pnpm -r build",
+    "build:shared": "pnpm --filter shared build",
+    "build:dashboard": "pnpm --filter mfe-dashboard build",
+    "build:settings": "pnpm --filter mfe-settings build",
+    "build:shell": "pnpm --filter shell build",
+    "clean": "pnpm -r exec rm -rf dist node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.6.0"
+  }
+}

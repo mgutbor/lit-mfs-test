@@ -43,6 +43,7 @@ Arquitectura de microfrontends basada en Lit 3 y Import Maps nativos del navegad
 | [04-routing.md](./docs/04-routing.md) | Routing del shell y routing interno de MFEs |
 | [05-security.md](./docs/05-security.md) | Seguridad, CSP, aislamiento, validación |
 | [06-data-fetching.md](./docs/06-data-fetching.md) | Consumo de datos via API: config-map, @lit/task, loading/error states |
+| [07-component-guidelines.md](./docs/07-component-guidelines.md) | Guía de arquitectura de componentes: MVVM, naming, estructura, eventos |
 
 ## Desarrollo local
 

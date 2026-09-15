@@ -1,28 +1,36 @@
 {
   "version": "1.0.0",
-  "baseUrl": "https://jsonplaceholder.typicode.com",
+  "baseUrl": "",
   "mfe-dashboard": {
-    "orders": {
-      "endpoint": "/todos",
-      "method": "GET",
-      "timeout": 5000
-    },
-    "analytics": {
-      "endpoint": "/posts",
-      "method": "GET",
-      "timeout": 10000
+    "name": "mfe-dashboard",
+    "baseUrl": "https://jsonplaceholder.typicode.com",
+    "endpoints": {
+      "orders": {
+        "endpoint": "/todos",
+        "method": "GET",
+        "timeout": 5000
+      },
+      "analytics": {
+        "endpoint": "/posts",
+        "method": "GET",
+        "timeout": 10000
+      }
     }
   },
   "mfe-settings": {
-    "profile": {
-      "endpoint": "/users/1",
-      "method": "GET",
-      "timeout": 3000
-    },
-    "update-profile": {
-      "endpoint": "/users/1",
-      "method": "PUT",
-      "timeout": 5000
+    "name": "mfe-settings",
+    "baseUrl": "https://jsonplaceholder.typicode.com",
+    "endpoints": {
+      "profile": {
+        "endpoint": "/users/1",
+        "method": "GET",
+        "timeout": 3000
+      },
+      "update-profile": {
+        "endpoint": "/users/1",
+        "method": "PUT",
+        "timeout": 5000
+      }
     }
   }
 }

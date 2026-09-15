@@ -67,6 +67,11 @@ export class LitMfShell extends LitElement {
     '/settings': '@lit-mf/settings',
   };
 
+  private mfeConfigKeys: Record<string, string> = {
+    '@lit-mf/dashboard': 'mfe-dashboard',
+    '@lit-mf/settings': 'mfe-settings',
+  };
+
   async firstUpdated() {
     await this.loadConfigMap();
     await this.loadMfe(this.currentRoute);
@@ -93,9 +98,11 @@ export class LitMfShell extends LitElement {
     }
   }
 
-  private getMfeConfig(mfeName: string): MfeConfig | undefined {
+  private getMfeConfig(mfeSpecifier: string): MfeConfig | undefined {
     if (!this.configMap) return undefined;
-    return this.configMap[mfeName as keyof ConfigMap] as MfeConfig | undefined;
+    const configKey = this.mfeConfigKeys[mfeSpecifier];
+    if (!configKey) return undefined;
+    return this.configMap[configKey as keyof ConfigMap] as MfeConfig | undefined;
   }
 
   private async loadMfe(route: string) {

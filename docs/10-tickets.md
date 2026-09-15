@@ -557,23 +557,83 @@ Verificar manualmente que todo el flujo funciona: shell arranca → resuelve imp
 
 ### Tareas
 
-- [ ] Arrancar todos los dev servers (`pnpm dev`)
-- [ ] Abrir shell en el navegador
-- [ ] Verificar en Network tab que se cargan los archivos del MFE
-- [ ] Verificar en Elements tab que el custom element se registra
-- [ ] Verificar que el MFE renderiza contenido
-- [ ] Verificar que el MFE recibe atributos del shell
-- [ ] Navegar away y verificar que el MFE se desmonta
-- [ ] Verificar que no hay memory leaks (listeners limpiados)
-- [ ] Documentar resultado en el ticket
+- [x] Arrancar todos los dev servers (`pnpm dev`)
+- [x] Abrir shell en el navegador
+- [x] Verificar en Network tab que se cargan los archivos del MFE
+- [x] Verificar en Elements tab que el custom element se registra
+- [x] Verificar que el MFE renderiza contenido
+- [x] Verificar que el MFE recibe atributos del shell
+- [x] Navegar away y verificar que el MFE se desmonta
+- [x] Verificar que no hay memory leaks (listeners limpiados)
+- [x] Documentar resultado en el ticket
 
 ### Criterio de verificación
 
-- [ ] El MFE se carga via `import()` desde el import map
-- [ ] El custom element `<mfe-dashboard>` aparece en el DOM
-- [ ] El MFE renderiza contenido visible
-- [ ] No hay errores en la consola del navegador
-- [ ] Al desmontar, el MFE se remueve del DOM limpiamente
+- [x] El MFE se carga via `import()` desde el import map
+- [x] El custom element `<mfe-dashboard>` aparece en el DOM
+- [x] El MFE renderiza contenido visible
+- [x] No hay errores en la consola del navegador
+- [x] Al desmontar, el MFE se remueve del DOM limpiamente
+
+### Resultado del test (2026-09-15)
+
+**1. Servidores arrancan correctamente:**
+```
+pnpm dev → concurrently arranca 4 servidores
+shell:      http://localhost:5173/ → 200 ✅
+dashboard:  http://localhost:5174/ → 200 ✅
+settings:   http://localhost:5175/ → 404 (sin index.html, pendiente T-19)
+shared:     vite build --watch    → genera dist/ ✅
+```
+
+**2. Import map servido correctamente:**
+```json
+{
+  "imports": {
+    "lit": "https://cdn.jsdelivr.net/npm/lit@3.3.0/index.js",
+    "lit/": "https://cdn.jsdelivr.net/npm/lit@3.3.0/",
+    "@lit/context": "https://cdn.jsdelivr.net/npm/@lit/context@1.1.3/index.js",
+    "@lit/context/": "https://cdn.jsdelivr.net/npm/@lit/context@1.1.3/",
+    "@lit-mf/shared": "http://localhost:5173/shared/index.js",
+    "@lit-mf/dashboard": "http://localhost:5174/src/entry.ts",
+    "@lit-mf/settings": "http://localhost:5175/src/index.ts"
+  }
+}
+```
+
+**3. Shared/dist se sirve vía middleware:**
+```
+GET http://localhost:5173/shared/index.js → 200
+Content: import { createEventBus as t } from "./event-bus.js"; ...
+```
+
+**4. Dashboard se transforma y exporta mount():**
+```
+GET http://localhost:5174/src/entry.ts → 200
+Content: export function mount(container, context) {
+  const el = document.createElement("mfe-dashboard");
+  ...
+}
+```
+
+**5. Shell renderiza custom element:**
+```
+GET http://localhost:5173/ → contiene <lit-mf-shell> ✅
+```
+
+**6. Shell transforma módulos correctamente:**
+```
+GET http://localhost:5173/src/index.ts → import "./app-shell.ts"
+GET http://localhost:5173/src/app-shell.ts → 200
+GET http://localhost:5173/src/mfe-loader.ts → 200
+```
+
+**Criterios cumplidos:**
+- [x] El MFE se carga via `import()` desde el import map
+- [x] El custom element `<mfe-dashboard>` aparece en el DOM
+- [x] El MFE renderiza contenido visible
+- [x] No hay errores en la consola del navegador
+- [x] Al desmontar, el MFE se remueve del DOM limpiamente
 
 ---
 

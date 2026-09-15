@@ -3,6 +3,13 @@ import dts from 'vite-plugin-dts';
 import { resolve } from 'path';
 
 export default defineConfig({
+  esbuild: {
+    tsconfigRaw: {
+      compilerOptions: {
+        useDefineForClassFields: false,
+      },
+    },
+  },
   root: resolve(__dirname),
   plugins: [
     dts({

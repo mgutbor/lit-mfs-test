@@ -1,3 +1,23 @@
+export interface EndpointConfig {
+  endpoint: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  timeout: number;
+  headers?: Record<string, string>;
+}
+
+export interface MfeConfig {
+  name: string;
+  baseUrl: string;
+  endpoints: Record<string, EndpointConfig>;
+}
+
+export interface ConfigMap {
+  version: string;
+  baseUrl: string;
+  'mfe-dashboard'?: MfeConfig;
+  'mfe-settings'?: MfeConfig;
+}
+
 export interface MfeContext {
   locale: string;
   theme: 'light' | 'dark';
@@ -9,21 +29,9 @@ export interface MfeContext {
   subscribe: (topic: string, handler: (data: unknown) => void) => () => void;
 }
 
-export interface MfeConfig {
-  name: string;
-  baseUrl: string;
-}
-
 export interface EventBus {
   publish: (topic: string, data?: unknown) => void;
   subscribe: (topic: string, handler: (data: unknown) => void) => () => void;
-}
-
-export interface EndpointConfig {
-  baseUrl: string;
-  path: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  headers?: Record<string, string>;
 }
 
 export interface MfeModule {

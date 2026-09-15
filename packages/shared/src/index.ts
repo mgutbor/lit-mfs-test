@@ -4,6 +4,7 @@ export type {
   EventBus,
   EndpointConfig,
   MfeModule,
+  ConfigMap,
 } from './types';
 
 export { createEventBus } from './event-bus';

@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import type { ConfigMap, MfeConfig } from '@lit-mf/shared';
 import { createEventBus } from '@lit-mf/shared';
 import { loadMFE } from './mfe-loader';
 
@@ -57,6 +58,8 @@ export class LitMfShell extends LitElement {
   @state()
   currentRoute = '/dashboard';
 
+  private configMap: ConfigMap | null = null;
+
   private cleanupMfe: (() => void) | null = null;
 
   private mfeModules: Record<string, string> = {
@@ -65,12 +68,34 @@ export class LitMfShell extends LitElement {
   };
 
   async firstUpdated() {
+    await this.loadConfigMap();
     await this.loadMfe(this.currentRoute);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.unloadCurrentMfe();
+  }
+
+  private async loadConfigMap() {
+    try {
+      const response = await fetch('/config-map.json');
+      if (!response.ok) {
+        throw new Error(`Failed to load config map: ${response.status}`);
+      }
+      this.configMap = await response.json();
+    } catch (error) {
+      console.error('Error loading config map:', error);
+      this.configMap = {
+        version: '1.0.0',
+        baseUrl: '',
+      };
+    }
+  }
+
+  private getMfeConfig(mfeName: string): MfeConfig | undefined {
+    if (!this.configMap) return undefined;
+    return this.configMap[mfeName as keyof ConfigMap] as MfeConfig | undefined;
   }
 
   private async loadMfe(route: string) {
@@ -88,13 +113,16 @@ export class LitMfShell extends LitElement {
       return;
     }
 
+    const mfeConfig = this.getMfeConfig(mfeSpecifier);
+
     const context = {
       locale: 'es',
       theme: 'light' as const,
       route,
-      config: {
+      config: mfeConfig ?? {
         name: mfeSpecifier,
-        baseUrl: window.location.origin,
+        baseUrl: this.configMap?.baseUrl ?? '',
+        endpoints: {},
       },
       onNavigate: (path: string) => this.navigate(path),
       publish: eventBus.publish,

@@ -1,19 +1,20 @@
-export interface DashboardModel {
-  orders: Order[];
-  stats: DashboardStats;
+export interface Todo {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
-export interface Order {
-  id: string;
-  customer: string;
-  product: string;
-  amount: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered';
-  date: string;
+export interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
 export interface DashboardStats {
-  totalOrders: number;
-  revenue: number;
-  pendingOrders: number;
+  totalTodos: number;
+  completedTodos: number;
+  pendingTodos: number;
+  totalPosts: number;
 }

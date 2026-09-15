@@ -5,8 +5,26 @@ import './components/orders-skeleton';
 import './components/error-message';
 
 export function renderDashboard(this: MfeDashboard) {
+  const themeVars = this.theme === 'dark'
+    ? {
+        '--color-surface': '#1e1e1e',
+        '--color-background': '#121212',
+        '--color-text-primary': 'rgba(255, 255, 255, 0.87)',
+        '--color-text-secondary': 'rgba(255, 255, 255, 0.6)',
+      }
+    : {
+        '--color-surface': '#f5f5f5',
+        '--color-background': '#ffffff',
+        '--color-text-primary': 'rgba(0, 0, 0, 0.87)',
+        '--color-text-secondary': 'rgba(0, 0, 0, 0.6)',
+      };
+
+  const style = Object.entries(themeVars)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('; ');
+
   return html`
-    <div class="dashboard">
+    <div class="dashboard" style="${style}">
       <h1>Dashboard</h1>
 
       <section class="todos-section">

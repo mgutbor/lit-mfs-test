@@ -132,10 +132,10 @@ User stories del proyecto Lit Microfrontends, generadas a partir de la documenta
 **Para** que un MFE comprometido no pueda afectar a otros MFEs ni al shell
 
 **Criterios de aceptación:**
-- [ ] CA-1: El shell define una CSP estricta en el HTML (sin `unsafe-eval`, sin `unsafe-inline`)
-- [ ] CA-2: Los MFEs no pueden acceder al `localStorage` de otros MFEs (namespace obligatorio)
-- [ ] CA-3: Los eventos se validan en el shell (shape del `detail`)
-- [ ] CA-4: Las URLs del import map usan versiones pinneadas (nunca `@latest`)
+- [x] CA-1: El shell define una CSP estricta en el HTML (sin `unsafe-eval`, sin `unsafe-inline`)
+- [x] CA-2: Los MFEs no pueden acceder al `localStorage` de otros MFEs (namespace obligatorio)
+- [x] CA-3: Los eventos se validan en el shell (shape del `detail`)
+- [x] CA-4: Las URLs del import map usan versiones pinneadas (nunca `@latest`)
 - [ ] CA-5: Los MFEs de terceros se aíslan en iframe con sandbox
 - [ ] CA-6: Se documentan los headers de seguridad (X-Content-Type-Options, X-Frame-Options)
 

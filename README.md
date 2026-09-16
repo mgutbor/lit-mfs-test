@@ -75,3 +75,15 @@ pnpm build
 # Los MFEs se publican como ESM bundles estáticos
 # El import map se sirve desde una API o se inyecta en el HTML
 ```
+
+## Seguridad
+
+La Fase 4 de hardening incorpora:
+
+- CSP en el shell, sin `unsafe-eval` ni `unsafe-inline` en `script-src`.
+- `frame-ancestors 'none'` servido mediante header HTTP.
+- Storage namespaced mediante `createNamespacedStorage()`; la preferencia de tema usa `mfe-settings:theme`.
+- Validación del `detail` de los eventos procesados por el shell.
+- Renderizado seguro de los mensajes de error del loader mediante `textContent`, sin interpolar datos en `innerHTML`.
+
+La política de desarrollo está definida en `packages/shell/index.html` y `packages/shell/vite.config.ts`. En producción, el servidor debe generar el nonce por respuesta y servir la CSP completa como header HTTP.

@@ -127,15 +127,23 @@ export async function loadMFE(
     setLoadingState(mfeSpecifier, LOADING_STATES.ERROR);
     console.error(`Failed to load MFE: ${mfeSpecifier}`, error);
 
-    container.innerHTML = `
-      <div style="padding: 1rem; background: #fee; border: 1px solid #fcc; border-radius: 4px;">
-        <h3 style="margin: 0 0 0.5rem 0; color: #c00;">Error cargando MFE</h3>
-        <p style="margin: 0; color: #600;">${mfeSpecifier}</p>
-        <p style="margin: 0.5rem 0 0 0; color: #900; font-size: 0.875rem;">
-          ${error instanceof Error ? error.message : 'Error desconocido'}
-        </p>
-      </div>
-    `;
+    const errorContainer = document.createElement('div');
+    errorContainer.style.cssText = 'padding: 1rem; background: #fee; border: 1px solid #fcc; border-radius: 4px;';
+
+    const title = document.createElement('h3');
+    title.textContent = 'Error cargando MFE';
+    title.style.cssText = 'margin: 0 0 0.5rem 0; color: #c00;';
+
+    const specifier = document.createElement('p');
+    specifier.textContent = mfeSpecifier;
+    specifier.style.cssText = 'margin: 0; color: #600;';
+
+    const message = document.createElement('p');
+    message.textContent = error instanceof Error ? error.message : 'Error desconocido';
+    message.style.cssText = 'margin: 0.5rem 0 0 0; color: #900; font-size: 0.875rem;';
+
+    errorContainer.append(title, specifier, message);
+    container.replaceChildren(errorContainer);
 
     return () => {};
   }

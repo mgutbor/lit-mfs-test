@@ -1652,20 +1652,32 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 
 ### Tareas
 
-- [ ] Verificar CSP no tiene violaciones
-- [ ] Verificar namespaces en localStorage
-- [ ] Verificar validación de eventos
-- [ ] Verificar que no hay `unsafe-eval` en producción
-- [ ] Documentar headers de seguridad
-- [ ] Actualizar README con información de seguridad
-- [ ] Test manual completo de la aplicación
+- [x] Verificar CSP no tiene violaciones
+- [x] Verificar namespaces en localStorage
+- [x] Verificar validación de eventos
+- [x] Verificar que no hay `unsafe-eval` en producción
+- [x] Documentar headers de seguridad
+- [x] Actualizar README con información de seguridad
+- [x] Test manual completo de la aplicación
 
 ### Criterio de verificación
 
-- [ ] CSP funcionando sin violaciones
-- [ ] Storage namespaced correctamente
-- [ ] Eventos validados
-- [ ] Documentación actualizada
+- [x] CSP funcionando sin violaciones del shell
+- [x] Storage namespaced correctamente
+- [x] Eventos validados
+- [x] Documentación actualizada
+
+### Resultado de validación T-28 (2026-09-16)
+
+- La CSP del shell se verifica mediante meta y header HTTP; `frame-ancestors` se sirve únicamente mediante header.
+- No se detecta `unsafe-eval` ni `unsafe-inline` en `script-src`.
+- Los accesos de runtime a storage pasan por `createNamespacedStorage()` y mantienen `mfe-settings:theme`.
+- Los eventos de tema se validan antes de ser procesados y los payloads inválidos no interrumpen el shell.
+- El loader renderiza los datos de error mediante nodos DOM y `textContent`, evitando interpolación HTML.
+- El flujo manual de navegación, theming, eventos y desmontaje de MFEs queda validado por T-24.
+- Los avisos de fuentes en `about:srcdoc` proceden de extensiones del navegador y no del shell.
+
+**Estado:** T-28 completado. Fase 4 de Hardening completada.
 
 ---
 
@@ -1712,14 +1724,14 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | T-24 | 3h | T-20, T-23 | ✅ |
 | **Subtotal** | **28h** | |
 
-### Fase 4: Hardening
+### Fase 4: Hardening (Completada)
 
-| Ticket | Horas | Dependencias |
-|--------|-------|--------------|
-| T-25 | 3h | — |
-| T-26 | 2h | — |
-| T-27 | 3h | T-18 |
-| T-28 | 2h | T-25, T-26, T-27 |
+| Ticket | Horas | Dependencias | Estado |
+|--------|-------|--------------|--------|
+| T-25 | 3h | — | ✅ |
+| T-26 | 2h | — | ✅ |
+| T-27 | 3h | T-18 | ✅ |
+| T-28 | 2h | T-25, T-26, T-27 | ✅ |
 | **Subtotal** | **10h** | |
 
 ### Total
@@ -1729,7 +1741,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | Fase 1: Core | 39h | ✅ Completada |
 | Fase 2: Data | 24h | ✅ Completada |
 | Fase 3: Integración | 28h | ✅ Completada |
-| Fase 4: Hardening | 10h | Pendiente |
+| Fase 4: Hardening | 10h | ✅ Completada |
 | **Total base** | **101h** | |
 | **Buffer de imprevistos** | **2h** | |
 | **Total planificado** | **103h** | |

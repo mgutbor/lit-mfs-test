@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import type { ConfigMap, MfeConfig } from '@lit-mf/shared';
 import { createEventBus, getThemeTokens } from '@lit-mf/shared';
-import { loadMFE } from './mfe-loader';
+import { loadMFE, unloadMFE } from './mfe-loader';
 import { getInitialPath, resolveRoute, type RouteMatch } from './router';
 
 const eventBus = createEventBus();
@@ -85,6 +85,8 @@ export class LitMfShell extends LitElement {
   private configMap: ConfigMap | null = null;
 
   private cleanupMfe: (() => void) | null = null;
+
+  private currentMfeSpecifier: string | null = null;
 
   private unsubscribeTheme?: () => void;
 
@@ -196,6 +198,7 @@ export class LitMfShell extends LitElement {
       context,
       { retries: 2, retryDelay: 1000, timeout: 10000 }
     );
+    this.currentMfeSpecifier = route.mfe;
   }
 
   private updateMountedMfeTheme(theme: 'light' | 'dark') {
@@ -215,10 +218,15 @@ export class LitMfShell extends LitElement {
   }
 
   private unloadCurrentMfe() {
-    if (this.cleanupMfe) {
-      this.cleanupMfe();
+    if (this.currentMfeSpecifier) {
+      unloadMFE(this.currentMfeSpecifier);
+      this.currentMfeSpecifier = null;
       this.cleanupMfe = null;
+      return;
     }
+
+    this.cleanupMfe?.();
+    this.cleanupMfe = null;
   }
 
   private navigate(path: string, replace = false) {

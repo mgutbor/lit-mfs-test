@@ -3,7 +3,7 @@
   "baseUrl": "",
   "mfe-dashboard": {
     "name": "mfe-dashboard",
-    "baseUrl": "https://jsonplaceholder.typicode.com",
+    "baseUrl": "https://dummyjson.com",
     "endpoints": {
       "orders": {
         "endpoint": "/todos",
@@ -19,7 +19,7 @@
   },
   "mfe-settings": {
     "name": "mfe-settings",
-    "baseUrl": "https://jsonplaceholder.typicode.com",
+    "baseUrl": "https://dummyjson.com",
     "endpoints": {
       "profile": {
         "endpoint": "/users/1",

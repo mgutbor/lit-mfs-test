@@ -30,7 +30,21 @@ export class MfeDashboard extends LitElement {
       const url = `${baseUrl}${endpoint}`;
       const response = await fetch(url, { signal });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json() as Promise<Todo[]>;
+      const payload = await response.json() as {
+        todos: Array<{
+          userId: number;
+          id: number;
+          todo: string;
+          completed: boolean;
+        }>;
+      };
+
+      return payload.todos.map((todo) => ({
+        userId: todo.userId,
+        id: todo.id,
+        title: todo.todo,
+        completed: todo.completed,
+      })) as Todo[];
     },
     args: () => [
       this.context?.config?.baseUrl ?? '',
@@ -43,7 +57,8 @@ export class MfeDashboard extends LitElement {
       const url = `${baseUrl}${endpoint}`;
       const response = await fetch(url, { signal });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json() as Promise<Post[]>;
+      const payload = await response.json() as { posts: Post[] };
+      return payload.posts;
     },
     args: () => [
       this.context?.config?.baseUrl ?? '',

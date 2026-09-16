@@ -51,13 +51,13 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 
 | Ticket | Tarea | Horas | Dependencias |
 |--------|-------|-------|--------------|
-| T-11 | Crear config-map.json con endpoints mock | 3h | — |
+| T-11 | Crear config-map.json con endpoints DummyJSON | 3h | — |
 | T-12 | Integrar config-map en shell y context | 3h | T-11 |
 | T-13 | Implementar `@lit/task` en MFE dashboard | 6h | T-05 |
 | T-14 | Crear componente orders-skeleton | 3h | — |
 | T-15 | Crear componente error-message con retry | 3h | — |
 | T-16 | Integrar fetch + skeleton + error en dashboard | 4h | T-13, T-14, T-15 |
-| T-17 | Test con API mock (jsonplaceholder) | 2h | T-16 |
+| T-17 | Test con API externa (DummyJSON) | 2h | T-16 |
 
 **Entregable:** Dashboard que carga órdenes desde una API con skeleton loading y error handling.
 
@@ -65,7 +65,7 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 
 ## Fase 3: Integración (28h) — Semana 4
 
-**Estado actual:** En progreso. T-18 a T-23 están implementados; T-24 está pendiente de validación integrada.
+**Estado actual:** Completada. T-18 a T-24 están implementados y la integración ha sido validada manualmente.
 
 | Ticket | Tarea | Horas | Dependencias |
 |--------|-------|-------|--------------|

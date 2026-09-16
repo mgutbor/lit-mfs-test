@@ -637,7 +637,7 @@ GET http://localhost:5173/src/mfe-loader.ts → 200
 
 ---
 
-## T-11: Crear config-map.json con endpoints mock
+## T-11: Crear config-map.json con endpoints DummyJSON
 
 **Horas:** 3h
 **Dependencias:** Ninguna
@@ -646,7 +646,7 @@ GET http://localhost:5173/src/mfe-loader.ts → 200
 
 ### Descripción
 
-Crear el fichero `config-map.json` con endpoints mock para desarrollo. Las URLs se centralizan aquí y el shell las inyecta a cada MFE via `mount(context)`.
+Crear el fichero `config-map.json` con endpoints externos de DummyJSON para desarrollo. Las URLs se centralizan aquí y el shell las inyecta a cada MFE via `mount(context)`.
 
 ### Archivos a crear/modificar
 
@@ -657,12 +657,12 @@ packages/shell/public/config-map.json
 ### Tareas
 
 - [x] Crear `config-map.json` con estructura versionada
-- [x] Definir `baseUrl` mock: `https://jsonplaceholder.typicode.com`
+- [x] Definir `baseUrl` externo: `https://dummyjson.com`
 - [x] Definir endpoints para `mfe-dashboard`:
-  - `orders`: GET `/todos` (mock de órdenes)
-  - `analytics`: GET `/posts` (mock de analytics)
+  - `orders`: GET `/todos` (datos de tareas adaptados como órdenes)
+  - `analytics`: GET `/posts` (datos de publicaciones adaptados como analytics)
 - [x] Definir endpoints para `mfe-settings`:
-  - `profile`: GET `/users/1` (mock de perfil)
+  - `profile`: GET `/users/1` (datos externos de perfil)
   - `update-profile`: PUT `/users/1`
 - [x] Incluir `timeout` por defecto en cada endpoint
 - [x] Verificar que el fichero se sirve en `http://localhost:5173/config-map.json`
@@ -672,7 +672,7 @@ packages/shell/public/config-map.json
 ```json
 {
   "version": "1.0.0",
-  "baseUrl": "https://jsonplaceholder.typicode.com",
+  "baseUrl": "https://dummyjson.com",
   "mfe-dashboard": {
     "orders": {
       "endpoint": "/todos",
@@ -965,7 +965,7 @@ packages/mfe-dashboard/src/mfe-dashboard.view.ts
 
 ---
 
-## T-17: Test con API mock (jsonplaceholder)
+## T-17: Test con API externa (DummyJSON)
 
 **Horas:** 2h
 **Dependencias:** T-16
@@ -988,32 +988,44 @@ Verificar que el dashboard carga datos de la API mock y maneja correctamente los
 
 ### Criterio de verificación
 
-- [x] Dashboard muestra datos de jsonplaceholder.typicode.com
+- [x] Dashboard muestra datos de DummyJSON
 - [x] Skeleton se visible durante loading
 - [x] Error message aparece si la API falla
 - [x] Botón retry re-intenta el fetch
 
-### Resultado del test (2026-09-15)
+### Resultado del test y migración a DummyJSON (2026-09-16)
 
 **1. Config-map.json sirve correctamente:**
+
+La API externa utilizada es [DummyJSON](https://dummyjson.com), con documentación oficial para [todos](https://dummyjson.com/docs/todos), [posts](https://dummyjson.com/docs/posts) y [users](https://dummyjson.com/docs/users).
 ```
 GET http://localhost:5173/config-map.json → 200
 Contiene: version, baseUrl, mfe-dashboard, mfe-settings
 ```
 
-**2. API mock responde correctamente:**
+**2. API externa responde correctamente:**
 ```
-GET https://jsonplaceholder.typicode.com/todos → 200
-[
-  { userId: 1, id: 1, title: "delectus aut autem", completed: false },
-  { userId: 1, id: 2, ... }
-]
+GET https://dummyjson.com/todos → 200
+{
+  "todos": [
+    { "userId": 26, "id": 1, "todo": "...", "completed": true },
+    { "userId": 5, "id": 2, "todo": "...", "completed": false }
+  ],
+  "total": 150,
+  "skip": 0,
+  "limit": 30
+}
 
-GET https://jsonplaceholder.typicode.com/posts → 200
-[
-  { userId: 1, id: 1, title: "...", body: "..." },
-  ...
-]
+GET https://dummyjson.com/posts → 200
+{
+  "posts": [
+    { "userId": 121, "id": 1, "title": "...", "body": "..." },
+    { "userId": 99, "id": 2, "title": "...", "body": "..." }
+  ],
+  "total": 251,
+  "skip": 0,
+  "limit": 30
+}
 ```
 
 **3. Shell carga el dashboard:**
@@ -1023,8 +1035,8 @@ GET http://localhost:5174/src/entry.ts → 200 ✅
 ```
 
 **4. Dashboard carga datos via @lit/task:**
-- `_todosTask` fetch desde `https://jsonplaceholder.typicode.com/todos`
-- `_postsTask` fetch desde `https://jsonplaceholder.typicode.com/posts`
+- `_todosTask` fetch desde `https://dummyjson.com/todos` y adapta `todo` a `title`
+- `_postsTask` fetch desde `https://dummyjson.com/posts` y extrae el array `posts`
 - `AbortSignal` cancela requests obsoletos
 
 **5. Estados de carga verificados:**
@@ -1037,7 +1049,12 @@ GET http://localhost:5174/src/entry.ts → 200 ✅
 npx tsc --noEmit --project packages/mfe-dashboard/tsconfig.json  # ✅ OK
 ```
 
-**7. Build exitoso:**
+**7. Compatibilidad de respuesta:**
+- DummyJSON devuelve envoltorios `{ todos: [...] }` y `{ posts: [...] }`.
+- El dashboard normaliza esas respuestas al modelo interno existente.
+- Las operaciones `PUT` de DummyJSON son simuladas y no persisten cambios.
+
+**8. Build exitoso:**
 ```bash
 pnpm --filter mfe-dashboard build  # ✅ 21.83 kB
 ```
@@ -1309,7 +1326,7 @@ El dashboard usa `mfe-dashboard-theme.css.ts` como fuente única de estilos; `or
 - **T-21:** completado. Los tokens de color, tipografía y espaciado están definidos en `shared` y se aplican desde el shell.
 - **T-22:** completado. Los estados, skeleton y mensajes de error usan tokens semánticos light/dark centralizados en `shared`.
 
-La siguiente tarea funcional es **T-23**, porque el shell todavía usa navegación interna sin `URLPattern`, `history.pushState` ni `popstate`.
+T-18 a T-24 completan la Fase 3 de integración: event bus, theming, routing y validación integrada.
 
 ---
 
@@ -1375,7 +1392,7 @@ export function resolveRoute(url: string): { mfe: string; subpath: string } | nu
 - La ruta inicial se obtiene desde `location.pathname`; `/` se normaliza a `/dashboard` con `replaceState`.
 - La navegación usa `history.pushState` y el botón atrás/adelante se procesa mediante `popstate`.
 - Las rutas no reconocidas muestran una vista 404 y desmontan el MFE activo.
-- Build y typecheck completados correctamente. La validación visual completa queda incluida en T-24.
+- Build y typecheck completados correctamente; la validación visual se cerró posteriormente en T-24.
 
 ---
 
@@ -1392,22 +1409,35 @@ Test end-to-end de la integración completa: routing, theming y comunicación en
 
 ### Tareas
 
-- [ ] Arrancar todos los servidores (`pnpm dev`)
-- [ ] Navegar entre dashboard y settings
-- [ ] Cambiar tema en settings
-- [ ] Verificar que el tema se propaga a dashboard
-- [ ] Verificar que la URL cambia al navegar
-- [ ] Verificar que el botón atrás funciona
-- [ ] Verificar que no hay memory leaks
-- [ ] Documentar resultado en el ticket
+- [x] Arrancar todos los servidores (`pnpm dev`)
+- [x] Navegar entre dashboard y settings
+- [x] Cambiar tema en settings
+- [x] Verificar que el tema se propaga a dashboard
+- [x] Verificar que la URL cambia al navegar
+- [x] Verificar que el botón atrás funciona
+- [x] Verificar que no hay memory leaks
+- [x] Documentar resultado en el ticket
 
 ### Criterio de verificación
 
-- [ ] Navegación funciona entre todos los MFEs
-- [ ] Tema se propaga correctamente
-- [ ] Eventos se emiten y reciben
-- [ ] Botón atrás funciona
-- [ ] No hay errores en consola
+- [x] Navegación funciona entre todos los MFEs
+- [x] Tema se propaga correctamente
+- [x] Eventos se emiten y reciben
+- [x] Botón atrás funciona
+- [x] No hay errores en consola
+
+### Resultado de validación (2026-09-16)
+
+- Los servidores de shell, dashboard, settings y shared arrancan con `pnpm dev`.
+- `/dashboard` y `/settings` cargan los MFEs correspondientes y la navegación actualiza la URL sin recarga completa.
+- La recarga directa de las rutas y la navegación atrás/adelante mantienen el estado esperado.
+- El cambio de tema desde Settings se propaga a Dashboard y la preferencia persiste tras recargar.
+- Los eventos de cambio de tema se emiten y reciben correctamente mediante el event bus.
+- No se detectan errores en consola durante el flujo validado.
+- El cambio de MFE desmonta el elemento anterior y elimina su entrada de caché mediante `unloadMFE()`, evitando MFEs duplicados y referencias retenidas.
+- Los endpoints externos de DummyJSON responden y el dashboard adapta sus respuestas al modelo interno.
+
+**Estado:** T-24 completado.
 
 ---
 
@@ -1625,7 +1655,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | T-17 | 2h | T-16 | ✅ |
 | **Subtotal** | **24h** | |
 
-### Fase 3: Integración (En progreso)
+### Fase 3: Integración (Completada)
 
 | Ticket | Horas | Dependencias | Estado |
 |--------|-------|--------------|--------|
@@ -1635,7 +1665,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | T-21 | 3h | — | ✅ |
 | T-22 | 4h | T-21 | ✅ |
 | T-23 | 5h | T-08 | ✅ |
-| T-24 | 3h | T-20, T-23 | Pendiente |
+| T-24 | 3h | T-20, T-23 | ✅ |
 | **Subtotal** | **28h** | |
 
 ### Fase 4: Hardening
@@ -1654,7 +1684,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 |------|-------|--------|
 | Fase 1: Core | 39h | ✅ Completada |
 | Fase 2: Data | 24h | ✅ Completada |
-| Fase 3: Integración | 28h | ⚠️ En progreso |
+| Fase 3: Integración | 28h | ✅ Completada |
 | Fase 4: Hardening | 10h | Pendiente |
 | **Total base** | **101h** | |
 | **Buffer de imprevistos** | **2h** | |

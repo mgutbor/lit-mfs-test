@@ -14,6 +14,10 @@ export const dashboardTheme = css`
     margin: 0 auto;
   }
 
+  .dashboard section{
+    margin-top: 2rem;
+  }
+
   .dashboard h1 {
     font-size: var(--font-size-xl, 1.5rem);
     margin: 0 0 var(--spacing-md, 16px) 0;

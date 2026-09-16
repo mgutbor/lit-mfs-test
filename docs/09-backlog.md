@@ -79,7 +79,9 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 |----|-------|-------|
 | US-03 | Consumir datos de API REST | 24h |
 
-**Entregable:** Config-map funcionando, MFEs con `@lit/task`, skeleton loading, error handling.
+**API externa de referencia:** DummyJSON (`https://dummyjson.com`) para todos, posts y users.
+
+**Entregable:** Config-map funcionando, MFEs con `@lit/task`, skeleton loading, error handling y normalización de las respuestas de DummyJSON.
 
 ### Fase 3: Integración (28 horas)
 
@@ -91,7 +93,7 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 | US-04 | Comunicar MFEs via eventos | 16h |
 | US-05 | Aplicar theming consistente | 12h |
 
-**Estado:** En progreso. US-02 ya tiene routing con `URLPattern`, y US-04 y US-05 están implementadas. La validación integrada queda pendiente en T-24.
+**Estado:** Completada. US-02 dispone de routing con `URLPattern`, y US-04 y US-05 están implementadas y validadas mediante T-24.
 
 **Entregable:** Shell con routing funcional, event bus, cambio de tema global y estilos consistentes.
 

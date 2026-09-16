@@ -65,7 +65,7 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 
 ## Fase 3: Integración (28h) — Semana 4
 
-**Estado actual:** En progreso. T-18 a T-22 están implementados; T-23 y T-24 están pendientes.
+**Estado actual:** En progreso. T-18 a T-23 están implementados; T-24 está pendiente de validación integrada.
 
 | Ticket | Tarea | Horas | Dependencias |
 |--------|-------|-------|--------------|

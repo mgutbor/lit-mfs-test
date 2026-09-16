@@ -3,6 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import type { ConfigMap, MfeConfig } from '@lit-mf/shared';
 import { createEventBus, getThemeTokens } from '@lit-mf/shared';
 import { loadMFE } from './mfe-loader';
+import { getInitialPath, resolveRoute, type RouteMatch } from './router';
 
 const eventBus = createEventBus();
 const STORAGE_KEY = 'mfe-settings:theme';
@@ -61,10 +62,22 @@ export class LitMfShell extends LitElement {
       padding: 2rem;
       background: var(--color-background, #f5f5f5);
     }
+    .not-found {
+      max-width: 640px;
+      margin: 4rem auto;
+      text-align: center;
+      color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
+    }
+    .not-found h1 {
+      color: var(--color-error, #d32f2f);
+    }
   `;
 
   @state()
-  currentRoute = '/dashboard';
+  currentRoute = getInitialPath();
+
+  @state()
+  private routeNotFound = false;
 
   @state()
   currentTheme: 'light' | 'dark' = getInitialTheme();
@@ -75,25 +88,26 @@ export class LitMfShell extends LitElement {
 
   private unsubscribeTheme?: () => void;
 
-  private mfeModules: Record<string, string> = {
-    '/dashboard': '@lit-mf/dashboard',
-    '/settings': '@lit-mf/settings',
-  };
-
   private mfeConfigKeys: Record<string, string> = {
     '@lit-mf/dashboard': 'mfe-dashboard',
     '@lit-mf/settings': 'mfe-settings',
   };
 
+  private handlePopState = () => {
+    void this.syncRouteFromLocation(false);
+  };
+
   async firstUpdated() {
     this.applyThemeTokens();
+    window.addEventListener('popstate', this.handlePopState);
     await this.loadConfigMap();
     this.subscribeToEvents();
-    await this.loadMfe(this.currentRoute);
+    await this.syncRouteFromLocation(true);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    window.removeEventListener('popstate', this.handlePopState);
     this.unsubscribeTheme?.();
     this.unloadCurrentMfe();
   }
@@ -131,13 +145,27 @@ export class LitMfShell extends LitElement {
     return this.configMap[configKey as keyof ConfigMap] as MfeConfig | undefined;
   }
 
-  private async loadMfe(route: string) {
-    const mfeSpecifier = this.mfeModules[route];
-    if (!mfeSpecifier) {
-      console.warn(`No MFE found for route: ${route}`);
+  private async syncRouteFromLocation(replaceRoot: boolean) {
+    const path = window.location.pathname;
+    const route = resolveRoute(path);
+
+    if (!route) {
+      this.currentRoute = path;
+      this.routeNotFound = true;
+      this.unloadCurrentMfe();
       return;
     }
 
+    if (replaceRoot && path !== route.route) {
+      window.history.replaceState({}, '', route.route);
+    }
+
+    this.currentRoute = route.route;
+    this.routeNotFound = false;
+    await this.loadMfe(route);
+  }
+
+  private async loadMfe(route: RouteMatch) {
     this.unloadCurrentMfe();
 
     const container = this.shadowRoot?.querySelector('#mfe-container');
@@ -146,14 +174,14 @@ export class LitMfShell extends LitElement {
       return;
     }
 
-    const mfeConfig = this.getMfeConfig(mfeSpecifier);
+    const mfeConfig = this.getMfeConfig(route.mfe);
 
     const context = {
       locale: 'es',
       theme: this.currentTheme,
-      route,
+      route: route.route,
       config: mfeConfig ?? {
-        name: mfeSpecifier,
+        name: route.mfe,
         baseUrl: this.configMap?.baseUrl ?? '',
         endpoints: {},
       },
@@ -163,7 +191,7 @@ export class LitMfShell extends LitElement {
     };
 
     this.cleanupMfe = await loadMFE(
-      mfeSpecifier,
+      route.mfe,
       container as HTMLElement,
       context,
       { retries: 2, retryDelay: 1000, timeout: 10000 }
@@ -193,9 +221,22 @@ export class LitMfShell extends LitElement {
     }
   }
 
-  private navigate(path: string) {
-    this.currentRoute = path;
-    this.loadMfe(path);
+  private navigate(path: string, replace = false) {
+    const route = resolveRoute(path);
+    const targetPath = path.split(/[?#]/, 1)[0] || '/';
+
+    window.history[replace ? 'replaceState' : 'pushState']({}, '', targetPath);
+
+    if (!route) {
+      this.currentRoute = targetPath;
+      this.routeNotFound = true;
+      this.unloadCurrentMfe();
+      return;
+    }
+
+    this.currentRoute = route.route;
+    this.routeNotFound = false;
+    void this.loadMfe(route);
   }
 
   render() {
@@ -206,7 +247,7 @@ export class LitMfShell extends LitElement {
           <ul class="nav-links">
             <li>
               <a
-                href="#dashboard"
+                href="/dashboard"
                 class="${this.currentRoute === '/dashboard' ? 'active' : ''}"
                 @click=${(e: Event) => {
                   e.preventDefault();
@@ -218,7 +259,7 @@ export class LitMfShell extends LitElement {
             </li>
             <li>
               <a
-                href="#settings"
+                href="/settings"
                 class="${this.currentRoute === '/settings' ? 'active' : ''}"
                 @click=${(e: Event) => {
                   e.preventDefault();
@@ -231,7 +272,18 @@ export class LitMfShell extends LitElement {
           </ul>
         </nav>
         <main class="main-content">
-          <div id="mfe-container"></div>
+          ${this.routeNotFound
+            ? html`
+                <div class="not-found">
+                  <h1>404</h1>
+                  <p>La ruta <strong>${this.currentRoute}</strong> no existe.</p>
+                  <a href="/dashboard" @click=${(e: Event) => {
+                    e.preventDefault();
+                    this.navigate('/dashboard');
+                  }}>Volver al dashboard</a>
+                </div>
+              `
+            : html`<div id="mfe-container"></div>`}
         </main>
       </div>
     `;

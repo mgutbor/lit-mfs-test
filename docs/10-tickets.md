@@ -1333,14 +1333,14 @@ packages/shell/src/app-shell.ts
 
 ### Tareas
 
-- [ ] Instalar polyfill `urlpattern-polyfill` si es necesario
-- [ ] Crear `router.ts` con array de `Route[]`
-- [ ] Implementar `resolveRoute(url)` que retorne `{ mfe, subpath }`
-- [ ] Integrar router en `app-shell.ts`
-- [ ] Escuchar `popstate` para navegación
-- [ ] Implementar `navigateTo(path)` con `history.pushState`
-- [ ] Soporte para sub-rutas (`/dashboard/analytics`)
-- [ ] Manejar 404 para rutas no encontradas
+- [x] Verificar la necesidad de `urlpattern-polyfill`; no es necesario para el target actual
+- [x] Crear `router.ts` con definiciones de rutas basadas en `URLPattern`
+- [x] Implementar `resolveRoute(url)` que retorna `{ mfe, route, subpath }`
+- [x] Integrar router en `app-shell.ts`
+- [x] Escuchar `popstate` para navegación
+- [x] Implementar navegación con `history.pushState`
+- [x] Soportar sub-rutas (`/dashboard/analytics`)
+- [x] Manejar 404 para rutas no encontradas
 
 ### Código
 
@@ -1368,6 +1368,14 @@ export function resolveRoute(url: string): { mfe: string; subpath: string } | nu
 # Botón atrás funciona
 # Recargar en /settings → mantiene la ruta
 ```
+
+### Resultado de implementación (2026-09-16)
+
+- `packages/shell/src/router.ts` resuelve `/dashboard`, `/settings` y sub-rutas del dashboard mediante `URLPattern`.
+- La ruta inicial se obtiene desde `location.pathname`; `/` se normaliza a `/dashboard` con `replaceState`.
+- La navegación usa `history.pushState` y el botón atrás/adelante se procesa mediante `popstate`.
+- Las rutas no reconocidas muestran una vista 404 y desmontan el MFE activo.
+- Build y typecheck completados correctamente. La validación visual completa queda incluida en T-24.
 
 ---
 
@@ -1626,7 +1634,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | T-20 | 4h | T-18, T-19 | ✅ |
 | T-21 | 3h | — | ✅ |
 | T-22 | 4h | T-21 | ✅ |
-| T-23 | 5h | T-08 | Pendiente |
+| T-23 | 5h | T-08 | ✅ |
 | T-24 | 3h | T-20, T-23 | Pendiente |
 | **Subtotal** | **28h** | |
 

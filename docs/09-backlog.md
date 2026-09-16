@@ -91,7 +91,7 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 | US-04 | Comunicar MFEs via eventos | 16h |
 | US-05 | Aplicar theming consistente | 12h |
 
-**Estado:** En progreso. US-04 está implementada, US-05 está parcialmente implementada y US-02 requiere el routing real con `URLPattern`.
+**Estado:** En progreso. US-04 y US-05 están implementadas; US-02 requiere el routing real con `URLPattern`.
 
 **Entregable:** Shell con routing funcional, event bus, cambio de tema global y estilos consistentes.
 

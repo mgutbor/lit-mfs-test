@@ -13,7 +13,7 @@ export class MfeSettings extends LitElement {
       display: block;
       padding: var(--spacing-md, 16px);
       font-family: var(--font-family, system-ui, -apple-system, sans-serif);
-      color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
+      color: var(--color-text-primary);
     }
 
     .settings {
@@ -24,7 +24,7 @@ export class MfeSettings extends LitElement {
       margin: 0 0 var(--spacing-lg, 24px) 0;
       font-size: var(--font-size-xl, 1.5rem);
       font-weight: var(--font-weight-semibold, 600);
-      color: var(--color-primary, #1976d2);
+      color: var(--color-primary);
     }
 
     .setting-item {
@@ -32,32 +32,32 @@ export class MfeSettings extends LitElement {
       justify-content: space-between;
       align-items: center;
       padding: var(--spacing-md, 16px) 0;
-      border-bottom: 1px solid var(--color-surface, #e0e0e0);
+      border-bottom: 1px solid var(--color-surface);
     }
 
     .setting-item label {
       font-weight: var(--font-weight-medium, 500);
-      color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
+      color: var(--color-text-primary);
     }
 
     .setting-value {
-      color: var(--color-text-secondary, rgba(0, 0, 0, 0.6));
+      color: var(--color-text-secondary);
     }
 
     .theme-toggle {
       padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
-      border: 1px solid var(--color-primary, #1976d2);
+      border: 1px solid var(--color-primary);
       border-radius: var(--border-radius, 4px);
       background: transparent;
-      color: var(--color-primary, #1976d2);
+      color: var(--color-primary);
       cursor: pointer;
       font-size: var(--font-size-sm, 0.875rem);
       transition: all 0.2s ease;
     }
 
     .theme-toggle:hover {
-      background: var(--color-primary, #1976d2);
-      color: var(--color-on-primary, #ffffff);
+      background: var(--color-primary);
+      color: var(--color-on-primary);
     }
   `;
 

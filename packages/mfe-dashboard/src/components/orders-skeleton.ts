@@ -19,16 +19,16 @@ export class OrdersSkeleton extends LitElement {
       align-items: center;
       gap: 1rem;
       padding: 0.75rem;
-      background: var(--color-surface, #ffffff);
+      background: var(--color-surface);
       border-radius: 4px;
     }
 
     .skeleton {
       background: linear-gradient(
         90deg,
-        var(--skeleton-base, #e5e7eb) 25%,
-        var(--skeleton-shine, #f3f4f6) 50%,
-        var(--skeleton-base, #e5e7eb) 75%
+        var(--color-skeleton-base) 25%,
+        var(--color-skeleton-shine) 50%,
+        var(--color-skeleton-base) 75%
       );
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;

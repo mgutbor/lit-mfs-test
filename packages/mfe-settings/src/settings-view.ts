@@ -7,9 +7,16 @@ export function renderSettings(this: MfeSettings) {
       <h2>Settings</h2>
 
       <div class="setting-item">
-        <label>Tema</label>
-        <button class="theme-toggle" @click=${this.toggleTheme}>
-          ${this.theme === 'light' ? '🌙 Oscuro' : '☀️ Claro'}
+        <label>
+          Tema: ${this.theme === 'light' ? 'Claro' : 'Oscuro'}
+        </label>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="Cambiar tema"
+          @click=${this.toggleTheme}
+        >
+          ${this.theme === 'light' ? '🌙 Cambiar a oscuro' : '☀️ Cambiar a claro'}
         </button>
       </div>
 

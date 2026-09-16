@@ -1275,18 +1275,28 @@ packages/mfe-settings/src/settings-view.ts
 
 ### Tareas
 
-- [ ] Reemplazar todos los colores hardcodeados por CSS custom properties (pendiente en estados y componentes auxiliares del dashboard)
+- [x] Reemplazar todos los colores hardcodeados por CSS custom properties
 - [x] Usar `var(--color-*)` con fallback en cada MFE
-- [x] Verificar que los colores principales cambian al cambiar tema
-- [ ] Verificar que todos los estilos son consistentes entre MFEs
-- [ ] Documentar tokens disponibles para cada MFE
+- [x] Verificar que todos los colores cambian al cambiar tema
+- [x] Verificar que todos los estilos son consistentes entre MFEs
+- [x] Documentar tokens disponibles para cada MFE
+
+### Tokens semánticos añadidos
+
+Los siguientes tokens están definidos en `packages/shared/src/tokens.ts` para ambos temas y son consumidos por los dos MFEs:
+
+- Estados: `--color-status-{pending|processing|shipped|delivered}-{background|text}`
+- Skeleton: `--color-skeleton-base`, `--color-skeleton-shine`
+- Errores: `--color-error-background`, `--color-error-border`, `--color-error-title`, `--color-error-text`, `--color-error-action`, `--color-error-action-hover`, `--color-error-focus`
+
+El dashboard usa `mfe-dashboard-theme.css.ts` como fuente única de estilos; `orders-skeleton` y `error-message` consumen los tokens semánticos compartidos.
 
 ### Criterio de verificación
 
 ```bash
-# Ambos MFEs usan los mismos tokens para los estilos principales
-# El cambio de tema afecta a ambos MFEs
-# Pendiente eliminar los colores hardcodeados de estados y componentes auxiliares
+# Ambos MFEs usan los mismos tokens semánticos
+# El cambio de tema afecta a ambos MFEs, incluidos estados, skeleton y errores
+# No hay colores directos fuera de la definición centralizada de tokens
 ```
 
 ---
@@ -1297,7 +1307,7 @@ packages/mfe-settings/src/settings-view.ts
 - **T-19:** completado. `mfe-settings` dispone de toggle, persistencia namespaced y evento `mfe-settings:theme-changed`.
 - **T-20:** completado funcionalmente. El shell actualiza el tema del MFE montado y el dashboard aplica los tokens al cambiar de tema.
 - **T-21:** completado. Los tokens de color, tipografía y espaciado están definidos en `shared` y se aplican desde el shell.
-- **T-22:** parcial. Los estilos principales usan tokens, pero todavía existen colores hardcodeados en estados del dashboard, `orders-skeleton`, `error-message` y el mensaje de error del loader.
+- **T-22:** completado. Los estados, skeleton y mensajes de error usan tokens semánticos light/dark centralizados en `shared`.
 
 La siguiente tarea funcional es **T-23**, porque el shell todavía usa navegación interna sin `URLPattern`, `history.pushState` ni `popstate`.
 
@@ -1615,7 +1625,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | T-19 | 5h | T-05, T-18 | ✅ |
 | T-20 | 4h | T-18, T-19 | ✅ |
 | T-21 | 3h | — | ✅ |
-| T-22 | 4h | T-21 | ⚠️ Parcial |
+| T-22 | 4h | T-21 | ✅ |
 | T-23 | 5h | T-08 | Pendiente |
 | T-24 | 3h | T-20, T-23 | Pendiente |
 | **Subtotal** | **28h** | |

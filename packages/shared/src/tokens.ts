@@ -13,6 +13,23 @@ export const themeLight = css`
     --color-on-surface: #212121;
     --color-text-primary: rgba(0, 0, 0, 0.87);
     --color-text-secondary: rgba(0, 0, 0, 0.6);
+    --color-status-pending-background: #fff3e0;
+    --color-status-pending-text: #e65100;
+    --color-status-processing-background: #e3f2fd;
+    --color-status-processing-text: #1565c0;
+    --color-status-shipped-background: #e8f5e9;
+    --color-status-shipped-text: #2e7d32;
+    --color-status-delivered-background: #f3e5f5;
+    --color-status-delivered-text: #7b1fa2;
+    --color-skeleton-base: #e5e7eb;
+    --color-skeleton-shine: #f3f4f6;
+    --color-error-background: #fee2e2;
+    --color-error-border: #fecaca;
+    --color-error-title: #991b1b;
+    --color-error-text: #b91c1c;
+    --color-error-action: #dc2626;
+    --color-error-action-hover: #b91c1c;
+    --color-error-focus: #f87171;
     --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
@@ -44,6 +61,23 @@ export const themeDark = css`
     --color-on-surface: #ffffff;
     --color-text-primary: rgba(255, 255, 255, 0.87);
     --color-text-secondary: rgba(255, 255, 255, 0.6);
+    --color-status-pending-background: #4a2f0a;
+    --color-status-pending-text: #ffcc80;
+    --color-status-processing-background: #12304a;
+    --color-status-processing-text: #90caf9;
+    --color-status-shipped-background: #17351d;
+    --color-status-shipped-text: #a5d6a7;
+    --color-status-delivered-background: #352044;
+    --color-status-delivered-text: #ce93d8;
+    --color-skeleton-base: #374151;
+    --color-skeleton-shine: #4b5563;
+    --color-error-background: #4b1d1d;
+    --color-error-border: #7f1d1d;
+    --color-error-title: #fecaca;
+    --color-error-text: #fca5a5;
+    --color-error-action: #ef5350;
+    --color-error-action-hover: #e57373;
+    --color-error-focus: #ff8a80;
     --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
@@ -74,6 +108,23 @@ export interface ThemeTokens {
   '--color-on-surface': string;
   '--color-text-primary': string;
   '--color-text-secondary': string;
+  '--color-status-pending-background': string;
+  '--color-status-pending-text': string;
+  '--color-status-processing-background': string;
+  '--color-status-processing-text': string;
+  '--color-status-shipped-background': string;
+  '--color-status-shipped-text': string;
+  '--color-status-delivered-background': string;
+  '--color-status-delivered-text': string;
+  '--color-skeleton-base': string;
+  '--color-skeleton-shine': string;
+  '--color-error-background': string;
+  '--color-error-border': string;
+  '--color-error-title': string;
+  '--color-error-text': string;
+  '--color-error-action': string;
+  '--color-error-action-hover': string;
+  '--color-error-focus': string;
   '--font-family': string;
   '--font-size-xs': string;
   '--font-size-sm': string;
@@ -103,6 +154,23 @@ export const tokensLight: ThemeTokens = {
   '--color-on-surface': '#212121',
   '--color-text-primary': 'rgba(0, 0, 0, 0.87)',
   '--color-text-secondary': 'rgba(0, 0, 0, 0.6)',
+  '--color-status-pending-background': '#fff3e0',
+  '--color-status-pending-text': '#e65100',
+  '--color-status-processing-background': '#e3f2fd',
+  '--color-status-processing-text': '#1565c0',
+  '--color-status-shipped-background': '#e8f5e9',
+  '--color-status-shipped-text': '#2e7d32',
+  '--color-status-delivered-background': '#f3e5f5',
+  '--color-status-delivered-text': '#7b1fa2',
+  '--color-skeleton-base': '#e5e7eb',
+  '--color-skeleton-shine': '#f3f4f6',
+  '--color-error-background': '#fee2e2',
+  '--color-error-border': '#fecaca',
+  '--color-error-title': '#991b1b',
+  '--color-error-text': '#b91c1c',
+  '--color-error-action': '#dc2626',
+  '--color-error-action-hover': '#b91c1c',
+  '--color-error-focus': '#f87171',
   '--font-family': 'system-ui, -apple-system, Segoe UI, Roboto, sans-serif',
   '--font-size-xs': '0.75rem',
   '--font-size-sm': '0.875rem',
@@ -132,6 +200,23 @@ export const tokensDark: ThemeTokens = {
   '--color-on-surface': '#ffffff',
   '--color-text-primary': 'rgba(255, 255, 255, 0.87)',
   '--color-text-secondary': 'rgba(255, 255, 255, 0.6)',
+  '--color-status-pending-background': '#4a2f0a',
+  '--color-status-pending-text': '#ffcc80',
+  '--color-status-processing-background': '#12304a',
+  '--color-status-processing-text': '#90caf9',
+  '--color-status-shipped-background': '#17351d',
+  '--color-status-shipped-text': '#a5d6a7',
+  '--color-status-delivered-background': '#352044',
+  '--color-status-delivered-text': '#ce93d8',
+  '--color-skeleton-base': '#374151',
+  '--color-skeleton-shine': '#4b5563',
+  '--color-error-background': '#4b1d1d',
+  '--color-error-border': '#7f1d1d',
+  '--color-error-title': '#fecaca',
+  '--color-error-text': '#fca5a5',
+  '--color-error-action': '#ef5350',
+  '--color-error-action-hover': '#e57373',
+  '--color-error-focus': '#ff8a80',
   '--font-family': 'system-ui, -apple-system, Segoe UI, Roboto, sans-serif',
   '--font-size-xs': '0.75rem',
   '--font-size-sm': '0.875rem',

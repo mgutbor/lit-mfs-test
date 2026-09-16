@@ -10,8 +10,8 @@ export class ErrorMessage extends LitElement {
 
     .error-container {
       padding: 1rem;
-      background: var(--error-bg, #fee2e2);
-      border: 1px solid var(--error-border, #fecaca);
+      background: var(--color-error-background);
+      border: 1px solid var(--color-error-border);
       border-radius: 8px;
       text-align: center;
     }
@@ -25,19 +25,19 @@ export class ErrorMessage extends LitElement {
       margin: 0 0 0.5rem 0;
       font-size: 1rem;
       font-weight: 600;
-      color: var(--error-title, #991b1b);
+      color: var(--color-error-title);
     }
 
     .error-text {
       margin: 0 0 1rem 0;
       font-size: 0.875rem;
-      color: var(--error-text, #b91c1c);
+      color: var(--color-error-text);
     }
 
     .retry-button {
       padding: 0.5rem 1rem;
-      background: var(--error-button-bg, #dc2626);
-      color: var(--error-button-text, #ffffff);
+      background: var(--color-error-action);
+      color: var(--color-on-primary);
       border: none;
       border-radius: 4px;
       font-size: 0.875rem;
@@ -47,11 +47,11 @@ export class ErrorMessage extends LitElement {
     }
 
     .retry-button:hover {
-      background: var(--error-button-hover, #b91c1c);
+      background: var(--color-error-action-hover);
     }
 
     .retry-button:focus {
-      outline: 2px solid var(--error-focus, #f87171);
+      outline: 2px solid var(--color-error-focus);
       outline-offset: 2px;
     }
   `;

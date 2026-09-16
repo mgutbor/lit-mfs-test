@@ -44,7 +44,7 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 
 **Subtotal Could:** 10 horas
 
-> **Criterio de estimación:** las 129h del backlog son estimaciones gruesas por user story y no deben sumarse directamente al plan de ejecución, porque varias tareas se comparten entre stories. El plan operativo usa el desglose de T-01 a T-28: 101h de tickets más 2h de buffer, es decir, 103h planificadas.
+> **Criterio de estimación:** las 129h del backlog original son estimaciones gruesas por user story y no deben sumarse directamente al plan de ejecución. El plan inicial T-01 a T-28 suma 101h de tickets más 2h de buffer, es decir, 103h. La extensión posterior al POC añade T-29 a T-40: 49h, con un total ampliado de 150h de tickets y 152h incluyendo el buffer original.
 
 ### Won't Have (esta iteración)
 
@@ -109,59 +109,15 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 
 **Entregable:** CSP estricta, validación de eventos, namespace en storage.
 
----
+### Roadmap posterior al POC
 
-## Prompt utilizado
+| Fase | Objetivo | Tickets | Horas | Estado |
+|------|----------|---------|-------|--------|
+| Fase 5: Quality & Reliability | Tests automatizados y loader robusto | T-29 a T-32 | 18h | Pendiente |
+| Fase 6: Runtime Contracts | Event bus, config y API client tipados | T-33 a T-36 | 16h | Pendiente |
+| Fase 7: Production Readiness | Shell, headers, observabilidad e aislamiento | T-37 a T-40 | 15h | Pendiente |
 
-### Prompt 1 (básico):
-
-```
-Genera un product backlog priorizado con MoSCoW para un proyecto de microfrontends 
-con Lit 3 e import maps. Las user stories están en 08-user-stories.md.
-```
-
-**Resultado:** Backlog genérico sin detallar dependencias ni fases.
-
-### Prompt 2 (con contexto):
-
-```
-Basándote en la documentación técnica de docs/01-07 y las user stories de 
-docs/08-user-stories.md, genera un product backlog priorizado con MoSCoW. 
-Incluye: dependencias entre stories, estimación de horas, fases de implementación 
-y un cronograma estimado. El proyecto es un POC de microfrontends con Lit 3 
-e import maps nativos.
-```
-
-**Resultado:** Backlog más completo pero sin razón de la priorización.
-
-### Prompt 3 (el más efectivo):
-
-```
-Eres un Product Owner técnico. Analiza la documentación del proyecto 
-en docs/01-07 y las user stories en docs/08-user-stories.md.
-
-Tarea: Genera un product backlog priorizado con MoSCoW que incluya:
-1. Matriz de priorización con justificación de cada categoría
-2. Backlog ordenado con dependencias y estimaciones
-3. Fases de implementación (máximo 4 fases)
-4. Historial de prompts utilizados y por qué este fue el mejor
-
-Contexto: Es un POC para demostrar arquitectura de microfrontends 
-con Lit 3 e import maps. El equipo tiene experiencia en frontend 
-pero no en microfrontends. Presupuesto: 129 horas totales.
-```
-
-**Resultado:** Backlog completo con justificaciones, fases coherentes y cronograma realista.
-
-### ¿Por qué el Prompt 3 fue el más efectivo?
-
-1. **Define el rol:** "Eres un Product Owner técnico" → sitúa al LLM en un contexto específico
-2. **Ancla las fuentes:** "Analiza la documentación en docs/" → obliga a leer los archivos existentes
-3. **Especifica el formato de salida:** Lista numerada con estructura concreta
-4. **Incluye contexto del proyecto:** POC, equipo, presupuesto → permite decisiones informadas
-5. **Pide metadatos:** "Historial de prompts" → reflexión sobre el proceso
-
-**Conclusión:** Los prompts más efectivos son los que combinan **rol + fuentes + formato + contexto + restricciones**.
+**Extensión posterior al POC:** 49h. El total ampliado pasa a 150h de tickets y 152h incluyendo el buffer original.
 
 ---
 
@@ -172,10 +128,17 @@ Semana 1-2:  Fase 1 (US-01 + buffer) → 41h
 Semana 3:    Fase 2 (US-03)          → 24h
 Semana 4:    Fase 3 (US-02 + US-04 + US-05) → 28h
 Semana 5:    Fase 4 (US-06)          → 10h
+Semana 6:    Fase 5 (Quality)        → 18h
+Semana 7:    Fase 6 (Contracts)      → 16h
+Semana 8:    Fase 7 (Production)     → 15h
 ```
 
-**Total base:** 101h de tickets + 2h de buffer = **103h planificadas**.
+**Plan inicial:** 101h de tickets + 2h de buffer = **103h**.
 
-**Total:** ~5 semanas a ritmo sostenido (26h/semana).
+**Extensión posterior al POC:** 49h.
+
+**Plan ampliado:** 150h de tickets + 2h de buffer original = **152h**.
+
+El plan ampliado representa aproximadamente 8 semanas a ritmo sostenido de 26h/semana.
 
 Si el ritmo es más relajado (15h/semana): ~8-9 semanas.

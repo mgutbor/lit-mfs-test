@@ -1734,6 +1734,15 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | T-28 | 2h | T-25, T-26, T-27 | ✅ |
 | **Subtotal** | **10h** | |
 
+### Fases posteriores propuestas
+
+| Fase | Horas | Estado |
+|------|-------|--------|
+| Fase 5: Quality & Reliability | 18h | Pendiente |
+| Fase 6: Runtime Contracts | 16h | Pendiente |
+| Fase 7: Production Readiness | 15h | Pendiente |
+| **Extensión posterior al POC** | **49h** | |
+
 ### Total
 
 | Fase | Horas | Estado |
@@ -1742,9 +1751,10 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | Fase 2: Data | 24h | ✅ Completada |
 | Fase 3: Integración | 28h | ✅ Completada |
 | Fase 4: Hardening | 10h | ✅ Completada |
-| **Total base** | **101h** | |
-| **Buffer de imprevistos** | **2h** | |
-| **Total planificado** | **103h** | |
+| Fases 5-7: Extensión posterior | 49h | Pendiente |
+| **Total base ampliado** | **150h** | |
+| **Buffer de imprevistos original** | **2h** | |
+| **Total planificado ampliado** | **152h** | |
 
 ### Camino crítico
 
@@ -1763,4 +1773,133 @@ Fase 3: T-18 → T-19 → T-20 → T-24
 Fase 4: T-25 → T-28
          T-26 ↗
          T-27 ↗
+
+Fase 5: T-29 → T-30 → T-31 → T-32
+Fase 6: T-33 → T-34 → T-35 → T-36
+Fase 7: T-37 → T-38 → T-39 → T-40
 ```
+
+---
+
+## Roadmap posterior al POC
+
+Las siguientes fases amplían el POC ya completado. Sus tickets son propuestas pendientes de ejecución y sus horas son estimaciones iniciales.
+
+### Fase 5: Quality & Reliability (18h)
+
+**Objetivo:** crear una red de tests y hacer robusta la carga dinámica de MFEs.
+
+#### T-29: Establecer infraestructura de tests
+
+**Horas:** 3h · **Dependencias:** T-28
+
+- [ ] Elegir runner compatible con el monorepo y Lit.
+- [ ] Configurar comandos de test por paquete.
+- [ ] Configurar cobertura y ejecución en CI.
+- [ ] Documentar la estrategia de tests.
+
+#### T-30: Añadir tests unitarios de router, storage y eventos
+
+**Horas:** 4h · **Dependencias:** T-29
+
+- [ ] Cubrir rutas válidas, subrutas, raíz y 404.
+- [ ] Cubrir namespace, lectura, escritura y eliminación de storage.
+- [ ] Cubrir eventos válidos, inválidos y desconocidos.
+- [ ] Cubrir contratos de tipos críticos.
+
+#### T-31: Hacer robusto el ciclo de vida del loader
+
+**Horas:** 5h · **Dependencias:** T-29
+
+- [ ] Cancelar cargas obsoletas cuando cambia la ruta.
+- [ ] Evitar que una carga antigua monte un MFE después de otra navegación.
+- [ ] Limpiar timeouts de imports completados o fallidos.
+- [ ] Cubrir retries, timeout, mount fallido y cleanup.
+
+#### T-32: Añadir smoke tests end-to-end
+
+**Horas:** 6h · **Dependencias:** T-30, T-31
+
+- [ ] Validar navegación entre Dashboard y Settings.
+- [ ] Validar cambio y persistencia del tema.
+- [ ] Validar atrás/adelante y recarga directa.
+- [ ] Validar desmontaje y ausencia de MFEs duplicados.
+
+### Fase 6: Runtime Contracts (16h)
+
+**Objetivo:** reducir el acoplamiento implícito y validar los contratos dinámicos.
+
+#### T-33: Tipar el event bus mediante un event map compartido
+
+**Horas:** 4h · **Dependencias:** T-27, T-30
+
+- [ ] Definir el mapa de eventos en `shared`.
+- [ ] Tipar `publish` y `subscribe` según el topic.
+- [ ] Centralizar payloads de Settings, Dashboard y Shell.
+- [ ] Mantener validación runtime para módulos dinámicos.
+
+#### T-34: Validar `config-map` en runtime
+
+**Horas:** 4h · **Dependencias:** T-29
+
+- [ ] Validar estructura, versión y secciones de cada MFE.
+- [ ] Validar endpoints, métodos y timeouts.
+- [ ] Rechazar configuraciones incompletas o malformadas.
+- [ ] Restringir orígenes a una allowlist por entorno.
+
+#### T-35: Crear un API client compartido
+
+**Horas:** 5h · **Dependencias:** T-34
+
+- [ ] Centralizar construcción de URLs y query strings.
+- [ ] Aplicar método, headers y timeout de `EndpointConfig`.
+- [ ] Normalizar errores HTTP y de red.
+- [ ] Mantener adapters específicos para respuestas de APIs externas.
+
+#### T-36: Alinear contratos y documentación técnica
+
+**Horas:** 3h · **Dependencias:** T-33, T-34
+
+- [ ] Eliminar discrepancias entre `shared/src/types.ts` y `docs/02-mfe-contract.md`.
+- [ ] Documentar el contrato real de `mount`, `MfeContext` y `EventBus`.
+- [ ] Documentar compatibilidad de browser y estrategia de versionado.
+
+### Fase 7: Production Readiness (15h)
+
+**Objetivo:** preparar el shell para operar fuera del entorno local.
+
+#### T-37: Separar responsabilidades del shell
+
+**Horas:** 5h · **Dependencias:** T-31, T-33
+
+- [ ] Extraer gestión de configuración, tema y runtime de MFEs.
+- [ ] Mantener `app-shell.ts` centrado en layout y composición.
+- [ ] Preservar los contratos públicos existentes.
+- [ ] Añadir tests de regresión antes de eliminar duplicidades.
+
+#### T-38: Completar headers de seguridad de producción
+
+**Horas:** 4h · **Dependencias:** T-34
+
+- [ ] Servir CSP completa como header HTTP en producción.
+- [ ] Generar nonce por respuesta.
+- [ ] Añadir `X-Content-Type-Options`, `Referrer-Policy` y `Permissions-Policy`.
+- [ ] Definir HSTS y `X-Frame-Options` según el entorno de deployment.
+
+#### T-39: Añadir observabilidad del runtime
+
+**Horas:** 3h · **Dependencias:** T-31, T-35
+
+- [ ] Definir códigos de error para carga y mount de MFEs.
+- [ ] Registrar duración, retries y resultado de cada carga.
+- [ ] Evitar exponer detalles sensibles en mensajes de usuario.
+- [ ] Preparar integración con logging o monitoring del entorno.
+
+#### T-40: Decidir el aislamiento de MFEs no confiables
+
+**Horas:** 3h · **Dependencias:** T-36, T-38
+
+- [ ] Documentar qué MFEs se consideran confiables.
+- [ ] Crear un ADR sobre import map frente a iframe sandbox.
+- [ ] Definir permisos mínimos para MFEs de terceros.
+- [ ] Documentar que namespace y Shadow DOM no son aislamiento de seguridad.

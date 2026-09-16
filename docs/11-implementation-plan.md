@@ -10,9 +10,14 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 | Fase 2: Data | 24h | 3 | MFEs que consumen APIs reales |
 | Fase 3: Integración | 28h | 4 | Routing, comunicación y theming entre MFEs |
 | Fase 4: Hardening | 10h | 5 | Seguridad y CSP |
-| **Total planificado** | **103h** | **5** | |
+| Fase 5: Quality & Reliability | 18h | 6 | Tests automatizados y loader robusto |
+| Fase 6: Runtime Contracts | 16h | 7 | Contratos tipados, config y API client |
+| Fase 7: Production Readiness | 15h | 8 | Operación, observabilidad e aislamiento |
+| **Total inicial** | **103h** | **5** | |
+| **Extensión posterior al POC** | **49h** | **3** | |
+| **Total planificado ampliado** | **152h** | **8** | |
 
-> El total base de tickets es 101h. Las 103h del plan incluyen 2h de buffer de imprevistos en la Fase 1.
+> El plan inicial T-01 a T-28 suma 101h de tickets y 2h de buffer. La extensión T-29 a T-40 añade 49h de tickets; el total ampliado es de 152h.
 
 ---
 
@@ -94,7 +99,38 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 
 **Entregable:** CSP funcionando, validación de eventos, storage namespaced.
 
----
+## Fase 5: Quality & Reliability (18h) — Semana 6
+
+| Ticket | Tarea | Horas | Dependencias |
+|--------|-------|-------|--------------|
+| T-29 | Establecer infraestructura de tests | 3h | T-28 |
+| T-30 | Tests unitarios de router, storage y eventos | 4h | T-29 |
+| T-31 | Robustecer ciclo de vida del loader | 5h | T-29 |
+| T-32 | Smoke tests end-to-end | 6h | T-30, T-31 |
+
+**Estado actual:** Pendiente.
+
+## Fase 6: Runtime Contracts (16h) — Semana 7
+
+| Ticket | Tarea | Horas | Dependencias |
+|--------|-------|-------|--------------|
+| T-33 | Tipar event bus mediante event map | 4h | T-27, T-30 |
+| T-34 | Validar `config-map` en runtime | 4h | T-29 |
+| T-35 | Crear API client compartido | 5h | T-34 |
+| T-36 | Alinear contratos y documentación técnica | 3h | T-33, T-34 |
+
+**Estado actual:** Pendiente.
+
+## Fase 7: Production Readiness (15h) — Semana 8
+
+| Ticket | Tarea | Horas | Dependencias |
+|--------|-------|-------|--------------|
+| T-37 | Separar responsabilidades del shell | 5h | T-31, T-33 |
+| T-38 | Completar headers de seguridad de producción | 4h | T-34 |
+| T-39 | Añadir observabilidad del runtime | 3h | T-31, T-35 |
+| T-40 | Decidir aislamiento de MFEs no confiables | 3h | T-36, T-38 |
+
+**Estado actual:** Pendiente.
 
 ## Camino crítico
 
@@ -128,4 +164,4 @@ Después de la **Fase 1 (T-10)** tendrás un POC funcional: shell que carga un M
 |-----------|----------|
 | [08-user-stories.md](./08-user-stories.md) | User stories que originan los tickets |
 | [09-backlog.md](./09-backlog.md) | Priorización MoSCoW y fases |
-| [10-tickets.md](./10-tickets.md) | Detalle de tickets T-01 a T-28 y estado de ejecución |
+| [10-tickets.md](./10-tickets.md) | Detalle de tickets T-01 a T-40 y estado de ejecución |

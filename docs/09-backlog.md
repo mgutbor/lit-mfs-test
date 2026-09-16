@@ -44,6 +44,8 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 
 **Subtotal Could:** 10 horas
 
+> **Criterio de estimación:** las 129h del backlog son estimaciones gruesas por user story y no deben sumarse directamente al plan de ejecución, porque varias tareas se comparten entre stories. El plan operativo usa el desglose de T-01 a T-28: 101h de tickets más 2h de buffer, es decir, 103h planificadas.
+
 ### Won't Have (esta iteración)
 
 | ID | Story | Razón |
@@ -56,16 +58,18 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 
 ## Fases de implementación
 
-### Fase 1: Core (67 horas)
+### Fase 1: Core (41 horas)
 
-**Objetivo:** Shell funcional con carga de MFEs y routing básico.
+**Objetivo:** Shell funcional con carga de MFEs en runtime.
 
 | ID | Story | Horas |
 |----|-------|-------|
 | US-01 | Cargar MFE en runtime via import map | 39h |
-| US-02 | Navegar entre MFEs sin recarga | 28h |
+| — | Buffer de imprevistos | 2h |
 
-**Entregable:** Shell Lit 3 que carga 2 MFEs dinámicamente y permite navegar entre ellos.
+**Estado:** Completada. US-01 está validada; el routing de US-02 se mantiene pendiente para T-23.
+
+**Entregable:** Shell Lit 3 que carga MFEs dinámicamente mediante import maps.
 
 ### Fase 2: Data (24 horas)
 
@@ -79,14 +83,17 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 
 ### Fase 3: Integración (28 horas)
 
-**Objetivo:** Comunicación y theming entre MFEs.
+**Objetivo:** Completar routing, comunicación y theming entre MFEs.
 
 | ID | Story | Horas |
 |----|-------|-------|
+| US-02 | Completar navegación entre MFEs | Incluida en T-23 y T-24 |
 | US-04 | Comunicar MFEs via eventos | 16h |
 | US-05 | Aplicar theming consistente | 12h |
 
-**Entregable:** Event bus funcionando, cambio de tema global, estilos consistentes.
+**Estado:** En progreso. US-04 está implementada, US-05 está parcialmente implementada y US-02 requiere el routing real con `URLPattern`.
+
+**Entregable:** Shell con routing funcional, event bus, cambio de tema global y estilos consistentes.
 
 ### Fase 4: Hardening (10 horas)
 
@@ -157,11 +164,13 @@ pero no en microfrontends. Presupuesto: 129 horas totales.
 ## Cronograma estimado
 
 ```
-Semana 1-2:  Fase 1 (US-01 + US-02)  → 67h
+Semana 1-2:  Fase 1 (US-01 + buffer) → 41h
 Semana 3:    Fase 2 (US-03)          → 24h
-Semana 4:    Fase 3 (US-04 + US-05)  → 28h
+Semana 4:    Fase 3 (US-02 + US-04 + US-05) → 28h
 Semana 5:    Fase 4 (US-06)          → 10h
 ```
+
+**Total base:** 101h de tickets + 2h de buffer = **103h planificadas**.
 
 **Total:** ~5 semanas a ritmo sostenido (26h/semana).
 

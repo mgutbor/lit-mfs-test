@@ -31,11 +31,11 @@ lit-mfs-test/
 
 ### Tareas
 
-- [ ] Crear `package.json` raíz con `"private": true`
-- [ ] Configurar `pnpm-workspace.yaml` con `packages: ['packages/*']`
-- [ ] Crear `tsconfig.base.json` con compiler options compartidos
-- [ ] Crear `package.json` para cada paquete con dependencias básicas
-- [ ] Verificar que `pnpm install` funciona correctamente
+- [x] Crear `package.json` raíz con `"private": true`
+- [x] Configurar `pnpm-workspace.yaml` con `packages: ['packages/*']`
+- [x] Crear `tsconfig.base.json` con compiler options compartidos
+- [x] Crear `package.json` para cada paquete con dependencias básicas
+- [x] Verificar que `pnpm install` funciona correctamente
 
 ### Criterio de verificación
 
@@ -72,12 +72,12 @@ packages/shared/
 
 ### Tareas
 
-- [ ] Implementar `types.ts` con interfaces `MfeContext`, `EventBus`, `EndpointConfig`, `MfeModule`
-- [ ] Implementar `event-bus.ts` con `createEventBus()` usando `document.addEventListener`
-- [ ] Implementar `api.ts` con helpers `buildUrl()` y `buildQueryString()`
-- [ ] Definir `tokens.ts` con CSS Custom Properties del design system
-- [ ] Configurar Vite en library mode para generar ESM bundle
-- [ ] Verificar que el paquete se compila correctamente
+- [x] Implementar `types.ts` con interfaces `MfeContext`, `EventBus`, `EndpointConfig`, `MfeModule`
+- [x] Implementar `event-bus.ts` con `createEventBus()` usando `document.addEventListener`
+- [x] Implementar `api.ts` con helpers `buildUrl()` y `buildQueryString()`
+- [x] Definir `tokens.ts` con CSS Custom Properties del design system
+- [x] Configurar Vite en library mode para generar ESM bundle
+- [x] Verificar que el paquete se compila correctamente
 
 ### Criterio de verificación
 
@@ -114,12 +114,12 @@ packages/mfe-settings/
 
 ### Tareas
 
-- [ ] Crear `vite.config.ts` con `build.lib` configurado
-- [ ] Configurar `formats: ['es']` (solo ESM)
-- [ ] Configurar `rollupOptions.external` con dependencias del import map
-- [ ] Configurar `target: 'es2022'`
-- [ ] Configurar `modulePreload: { polyfill: false }`
-- [ ] Verificar que el build genera un ESM bundle válido
+- [x] Crear `vite.config.ts` con `build.lib` configurado
+- [x] Configurar `formats: ['es']` (solo ESM)
+- [x] Configurar `rollupOptions.external` con dependencias del import map
+- [x] Configurar `target: 'es2022'`
+- [x] Configurar `modulePreload: { polyfill: false }`
+- [x] Verificar que el build genera un ESM bundle válido
 
 ### Configuración base
 
@@ -178,13 +178,13 @@ packages/mfe-dashboard/src/
 
 ### Tareas
 
-- [ ] Implementar `mfe-dashboard.viewmodel.ts` extendiendo LitElement
-- [ ] Declarar propiedades reactivas (`locale`, `theme`, `route`)
-- [ ] Implementar `render()` con contenido mínimo
-- [ ] Crear Theme CSS con estilos base
-- [ ] Implementar `entry.ts` con función `mount(container, context)`
-- [ ] Registrar custom element con `@customElement('mfe-dashboard')`
-- [ ] Verificar que el componente renderiza en un HTML de prueba
+- [x] Implementar `mfe-dashboard.viewmodel.ts` extendiendo LitElement
+- [x] Declarar propiedades reactivas (`locale`, `theme`, `route`)
+- [x] Implementar `render()` con contenido mínimo
+- [x] Crear Theme CSS con estilos base
+- [x] Implementar `entry.ts` con función `mount(container, context)`
+- [x] Registrar custom element con `@customElement('mfe-dashboard')`
+- [x] Verificar que el componente renderiza en un HTML de prueba
 
 ### Componente mínimo
 
@@ -237,13 +237,13 @@ packages/mfe-dashboard/src/
 
 ### Tareas
 
-- [ ] Implementar `mount(container, context)`:
+- [x] Implementar `mount(container, context)`:
   - Crear el custom element `mfe-dashboard`
   - Asignar atributos desde el context (locale, theme)
   - Append al container
   - Retornar función de cleanup que hace `el.remove()`
-- [ ] Implementar `unmount()` opcional para limpieza adicional
-- [ ] Verificar que mount/unmount funciona en test manual
+- [x] Implementar `unmount()` opcional para limpieza adicional
+- [x] Verificar que mount/unmount funciona en test manual
 
 ### Código
 
@@ -308,12 +308,12 @@ packages/shell/
 
 ### Tareas
 
-- [ ] Crear `index.html` con `<script type="importmap">` inline
-- [ ] Configurar import map con URLs de dependencias (lit, @lit/context)
-- [ ] Configurar import map con URLs de MFEs (localhost en desarrollo)
-- [ ] Implementar `app-shell.ts` como LitElement con nav y container
-- [ ] Crear `main.ts` que registra el custom element
-- [ ] Verificar que el shell carga sin errores
+- [x] Crear `index.html` con `<script type="importmap">` inline
+- [x] Configurar import map con URLs de dependencias (lit, @lit/context)
+- [x] Configurar import map con URLs de MFEs (localhost en desarrollo)
+- [x] Implementar `app-shell.ts` como LitElement con nav y container
+- [x] Crear `main.ts` que registra el custom element
+- [x] Verificar que el shell carga sin errores
 
 ### Import map (desarrollo)
 
@@ -361,16 +361,16 @@ packages/shell/src/
 
 ### Tareas
 
-- [ ] Implementar `loadMFE(mfeSpecifier, container, context)`:
+- [x] Implementar `loadMFE(mfeSpecifier, container, context)`:
   - Usar `import(mfeSpecifier)` para cargar el módulo
   - Llamar a `module.mount(container, context)`
   - Retornar la función de cleanup
-- [ ] Implementar `unloadMFE(cleanup)`:
+- [x] Implementar `unloadMFE(cleanup)`:
   - Llamar a la función de cleanup
   - Limpiar referencias
-- [ ] Manejar errores de carga (MFE no encontrado, fallo de red)
-- [ ] Implementar cache de MFEs ya cargados
-- [ ] Verificar que el loader carga un MFE desde el import map
+- [x] Manejar errores de carga (MFE no encontrado, fallo de red)
+- [x] Implementar cache de MFEs ya cargados
+- [x] Verificar que el loader carga un MFE desde el import map
 
 ### Código
 
@@ -440,12 +440,12 @@ packages/shell/index.html        # Verificar import map
 
 ### Tareas
 
-- [ ] Importar `loadMFE` en `app-shell.ts`
-- [ ] Implementar `connectedCallback` que carga el MFE al montar
-- [ ] Implementar `disconnectedCallback` que descarga el MFE
-- [ ] Verificar que el shell carga el MFE desde `localhost:5174`
-- [ ] Verificar que el MFE recibe el context (locale, theme)
-- [ ] Verificar que no hay errores en consola
+- [x] Importar `loadMFE` en `app-shell.ts`
+- [x] Implementar `connectedCallback` que carga el MFE al montar
+- [x] Implementar `disconnectedCallback` que descarga el MFE
+- [x] Verificar que el shell carga el MFE desde `localhost:5174`
+- [x] Verificar que el MFE recibe el context (locale, theme)
+- [x] Verificar que no hay errores en consola
 
 ### Código de integración
 
@@ -514,10 +514,10 @@ package.json raíz               # Script "dev"
 
 ### Tareas
 
-- [ ] Instalar `concurrently` como dependencia de desarrollo
-- [ ] Crear script `dev` en `package.json` raíz
-- [ ] Configurar scripts individuales en cada paquete
-- [ ] Verificar que `pnpm dev` arranca todos los servidores
+- [x] Instalar `concurrently` como dependencia de desarrollo
+- [x] Crear script `dev` en `package.json` raíz
+- [x] Configurar scripts individuales en cada paquete
+- [x] Verificar que `pnpm dev` arranca todos los servidores
 
 ### Scripts
 
@@ -656,16 +656,16 @@ packages/shell/public/config-map.json
 
 ### Tareas
 
-- [ ] Crear `config-map.json` con estructura versionada
-- [ ] Definir `baseUrl` mock: `https://jsonplaceholder.typicode.com`
-- [ ] Definir endpoints para `mfe-dashboard`:
+- [x] Crear `config-map.json` con estructura versionada
+- [x] Definir `baseUrl` mock: `https://jsonplaceholder.typicode.com`
+- [x] Definir endpoints para `mfe-dashboard`:
   - `orders`: GET `/todos` (mock de órdenes)
   - `analytics`: GET `/posts` (mock de analytics)
-- [ ] Definir endpoints para `mfe-settings`:
+- [x] Definir endpoints para `mfe-settings`:
   - `profile`: GET `/users/1` (mock de perfil)
   - `update-profile`: PUT `/users/1`
-- [ ] Incluir `timeout` por defecto en cada endpoint
-- [ ] Verificar que el fichero se sirve en `http://localhost:5173/config-map.json`
+- [x] Incluir `timeout` por defecto en cada endpoint
+- [x] Verificar que el fichero se sirve en `http://localhost:5173/config-map.json`
 
 ### Estructura del config-map
 
@@ -724,12 +724,12 @@ packages/shared/src/types.ts
 
 ### Tareas
 
-- [ ] Crear función `loadConfigMap()` que haga fetch de `/config-map.json`
-- [ ] Cargar config-map en `firstUpdated()` del shell
-- [ ] Ampliar `MfeContext` para incluir `config: Record<string, EndpointConfig>`
-- [ ] Pasar `config: configMap['mfe-dashboard']` al context del dashboard
-- [ ] Pasar `config: configMap['mfe-settings']` al context de settings
-- [ ] Manejar error si config-map no carga (fallback o mensaje)
+- [x] Crear función `loadConfigMap()` que haga fetch de `/config-map.json`
+- [x] Cargar config-map en `firstUpdated()` del shell
+- [x] Ampliar `MfeContext` para incluir `config: Record<string, EndpointConfig>`
+- [x] Pasar `config: configMap['mfe-dashboard']` al context del dashboard
+- [x] Pasar `config: configMap['mfe-settings']` al context de settings
+- [x] Manejar error si config-map no carga (fallback o mensaje)
 
 ### Código
 
@@ -781,13 +781,13 @@ packages/mfe-dashboard/src/model/mfe-dashboard.model.ts
 
 ### Tareas
 
-- [ ] Instalar `@lit/task` como dependencia (ya está en package.json)
-- [ ] Definir interfaces `Order` y `Analytics` en `model/`
-- [ ] Crear `_ordersTask` con `Task` que fetch desde `context.config.orders.endpoint`
-- [ ] Crear `_analyticsTask` con `Task` que fetch desde `context.config.analytics.endpoint`
-- [ ] Implementar `render()` con `task.render({ pending, complete, error })`
-- [ ] Usar `AbortSignal` para cancelar requests obsoletos
-- [ ] Configurar `args: () => [this.dateRange]` para re-fetch automático
+- [x] Instalar `@lit/task` como dependencia (ya está en package.json)
+- [x] Definir interfaces `Order` y `Analytics` en `model/`
+- [x] Crear `_ordersTask` con `Task` que fetch desde `context.config.orders.endpoint`
+- [x] Crear `_analyticsTask` con `Task` que fetch desde `context.config.analytics.endpoint`
+- [x] Implementar `render()` con `task.render({ pending, complete, error })`
+- [x] Usar `AbortSignal` para cancelar requests obsoletos
+- [x] Configurar `args` para re-fetch automático cuando cambia la configuración
 
 ### Código base
 
@@ -833,11 +833,11 @@ packages/mfe-dashboard/src/components/orders-skeleton.ts
 
 ### Tareas
 
-- [ ] Crear componente `OrdersSkeleton` como LitElement
-- [ ] Definir estilos CSS con animación `@keyframes shimmer`
-- [ ] Renderizar 5 filas simulando una tabla (avatar + 2 líneas de texto)
-- [ ] Usar CSS custom properties para colores del skeleton
-- [ ] Registrar custom element
+- [x] Crear componente `OrdersSkeleton` como LitElement
+- [x] Definir estilos CSS con animación `@keyframes shimmer`
+- [x] Renderizar 5 filas simulando una tabla (avatar + 2 líneas de texto)
+- [x] Usar CSS custom properties para colores del skeleton
+- [x] Registrar custom element
 
 ### Estilos base
 
@@ -886,12 +886,12 @@ packages/mfe-dashboard/src/components/error-message.ts
 
 ### Tareas
 
-- [ ] Crear componente `ErrorMessage` como LitElement
-- [ ] Recibir propiedad `error: Error` con el mensaje
-- [ ] Mostrar mensaje de error formateado
-- [ ] Emitir evento `retry` al hacer clic en el botón
-- [ ] Estilos para error (fondo rojo claro, borde, tipografía)
-- [ ] Registrar custom element
+- [x] Crear componente `ErrorMessage` como LitElement
+- [x] Recibir propiedad `error: Error` con el mensaje
+- [x] Mostrar mensaje de error formateado
+- [x] Emitir evento `retry` al hacer clic en el botón
+- [x] Estilos para error (fondo rojo claro, borde, tipografía)
+- [x] Registrar custom element
 
 ### Código
 
@@ -945,13 +945,13 @@ packages/mfe-dashboard/src/mfe-dashboard.view.ts
 
 ### Tareas
 
-- [ ] Importar `OrdersSkeleton` y `ErrorMessage` en el view
-- [ ] Conectar `_ordersTask.render()` con skeleton y error
-- [ ] Conectar `_analyticsTask.render()` con skeleton y error
-- [ ] Verificar que el skeleton se muestra durante el fetch
-- [ ] Verificar que los datos se renderizan al completar
-- [ ] Verificar que el error se muestra al fallar
-- [ ] Verificar que retry re-intenta el fetch
+- [x] Importar `OrdersSkeleton` y `ErrorMessage` en el view
+- [x] Conectar `_ordersTask.render()` con skeleton y error
+- [x] Conectar `_analyticsTask.render()` con skeleton y error
+- [x] Verificar que el skeleton se muestra durante el fetch
+- [x] Verificar que los datos se renderizan al completar
+- [x] Verificar que el error se muestra al fallar
+- [x] Verificar que retry re-intenta el fetch
 
 ### Criterio de verificación
 
@@ -1064,12 +1064,12 @@ packages/shell/src/app-shell.ts
 
 ### Tareas
 
-- [ ] Revisar `createEventBus()` en shared (ya implementado)
-- [ ] Inyectar event bus en el context de cada MFE
-- [ ] Implementar listener en shell para `mfe-settings:theme-changed`
-- [ ] Propagar cambios de tema a todos los MFEs via event bus
-- [ ] Implementar cleanup de listeners en `disconnectedCallback`
-- [ ] Verificar que los eventos se emiten y reciben correctamente
+- [x] Revisar `createEventBus()` en shared (ya implementado)
+- [x] Inyectar event bus en el context de cada MFE
+- [x] Implementar listener en shell para `mfe-settings:theme-changed`
+- [x] Propagar cambios de tema a todos los MFEs via event bus
+- [x] Implementar cleanup de listeners en `disconnectedCallback`
+- [x] Verificar que los eventos se emiten y reciben correctamente
 
 ### Código
 
@@ -1124,12 +1124,12 @@ packages/mfe-settings/src/settings-view.ts
 
 ### Tareas
 
-- [ ] Refactorizar settings con patrón MVVM
-- [ ] Implementar toggle light/dark en el template
-- [ ] Emitir evento `mfe-settings:theme-changed` al cambiar tema
-- [ ] Recibir tema actual via atributo `theme`
-- [ ] Persistir preferencia en `localStorage` (con namespace)
-- [ ] Estilos para el toggle de tema
+- [x] Refactorizar settings con patrón MVVM
+- [x] Implementar toggle light/dark en el template
+- [x] Emitir evento `mfe-settings:theme-changed` al cambiar tema
+- [x] Recibir tema actual via atributo `theme`
+- [x] Persistir preferencia en `localStorage` (con namespace propio)
+- [x] Estilos para el toggle de tema
 
 ### Código
 
@@ -1176,12 +1176,12 @@ packages/mfe-dashboard/src/mfe-dashboard.viewmodel.ts
 
 ### Tareas
 
-- [ ] Shell escucha `mfe-settings:theme-changed`
-- [ ] Shell actualiza atributo `theme` en todos los MFEs
-- [ ] Shell emite `shell:theme-changed` via event bus
-- [ ] Dashboard escucha `shell:theme-changed`
-- [ ] Dashboard actualiza CSS custom properties del tema
-- [ ] Verificar que el cambio es inmediato y visual
+- [x] Shell escucha `mfe-settings:theme-changed`
+- [x] Shell actualiza la propiedad `theme` del MFE montado
+- [x] Shell emite `shell:theme-changed` via event bus
+- [x] Dashboard escucha `shell:theme-changed`
+- [x] Dashboard actualiza CSS custom properties del tema
+- [x] Verificar que el cambio es inmediato y visual
 
 ### Criterio de verificación
 
@@ -1215,12 +1215,12 @@ packages/shell/src/app-shell.ts
 
 ### Tareas
 
-- [ ] Definir tokens de color (primary, secondary, surface, background, etc.)
-- [ ] Definir tokens de tipografía (font-family, sizes, weights)
-- [ ] Definir tokens de espaciado (spacing scale)
-- [ ] Crear temas light y dark
-- [ ] Aplicar tokens en `:host` del shell
-- [ ] Exportar tokens desde shared
+- [x] Definir tokens de color (primary, secondary, surface, background, etc.)
+- [x] Definir tokens de tipografía (font-family, sizes, weights)
+- [x] Definir tokens de espaciado (spacing scale)
+- [x] Crear temas light y dark
+- [x] Aplicar tokens en `:host` del shell
+- [x] Exportar tokens desde shared
 
 ### Tokens base
 
@@ -1275,19 +1275,31 @@ packages/mfe-settings/src/settings-view.ts
 
 ### Tareas
 
-- [ ] Reemplazar colores hardcodeados por CSS custom properties
-- [ ] Usar `var(--color-*)` con fallback en cada MFE
-- [ ] Verificar que los colores cambian al cambiar tema
-- [ ] Verificar que los estilos son consistentes entre MFEs
+- [ ] Reemplazar todos los colores hardcodeados por CSS custom properties (pendiente en estados y componentes auxiliares del dashboard)
+- [x] Usar `var(--color-*)` con fallback en cada MFE
+- [x] Verificar que los colores principales cambian al cambiar tema
+- [ ] Verificar que todos los estilos son consistentes entre MFEs
 - [ ] Documentar tokens disponibles para cada MFE
 
 ### Criterio de verificación
 
 ```bash
-# Ambos MFEs usan los mismos tokens
+# Ambos MFEs usan los mismos tokens para los estilos principales
 # El cambio de tema afecta a ambos MFEs
-# No hay colores hardcodeados en los componentes
+# Pendiente eliminar los colores hardcodeados de estados y componentes auxiliares
 ```
+
+---
+
+### Resultado actual de la Fase 3 (2026-09-16)
+
+- **T-18:** completado. El event bus está disponible en `shared`, se inyecta mediante el contexto y el shell propaga `mfe-settings:theme-changed` como `shell:theme-changed`.
+- **T-19:** completado. `mfe-settings` dispone de toggle, persistencia namespaced y evento `mfe-settings:theme-changed`.
+- **T-20:** completado funcionalmente. El shell actualiza el tema del MFE montado y el dashboard aplica los tokens al cambiar de tema.
+- **T-21:** completado. Los tokens de color, tipografía y espaciado están definidos en `shared` y se aplican desde el shell.
+- **T-22:** parcial. Los estilos principales usan tokens, pero todavía existen colores hardcodeados en estados del dashboard, `orders-skeleton`, `error-message` y el mensaje de error del loader.
+
+La siguiente tarea funcional es **T-23**, porque el shell todavía usa navegación interna sin `URLPattern`, `history.pushState` ni `popstate`.
 
 ---
 
@@ -1582,30 +1594,30 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | T-09 | 2h | T-08 | ✅ |
 | T-10 | 3h | T-09 | ✅ |
 
-### Fase 2: Data
+### Fase 2: Data (Completada)
 
-| Ticket | Horas | Dependencias |
-|--------|-------|--------------|
-| T-11 | 3h | — |
-| T-12 | 3h | T-11 |
-| T-13 | 6h | T-05, T-12 |
-| T-14 | 3h | — |
-| T-15 | 3h | — |
-| T-16 | 4h | T-13, T-14, T-15 |
-| T-17 | 2h | T-16 |
+| Ticket | Horas | Dependencias | Estado |
+|--------|-------|--------------|--------|
+| T-11 | 3h | — | ✅ |
+| T-12 | 3h | T-11 | ✅ |
+| T-13 | 6h | T-05, T-12 | ✅ |
+| T-14 | 3h | — | ✅ |
+| T-15 | 3h | — | ✅ |
+| T-16 | 4h | T-13, T-14, T-15 | ✅ |
+| T-17 | 2h | T-16 | ✅ |
 | **Subtotal** | **24h** | |
 
-### Fase 3: Integración
+### Fase 3: Integración (En progreso)
 
-| Ticket | Horas | Dependencias |
-|--------|-------|--------------|
-| T-18 | 4h | T-02 |
-| T-19 | 5h | T-05, T-18 |
-| T-20 | 4h | T-18, T-19 |
-| T-21 | 3h | — |
-| T-22 | 4h | T-21 |
-| T-23 | 5h | T-08 |
-| T-24 | 3h | T-20, T-23 |
+| Ticket | Horas | Dependencias | Estado |
+|--------|-------|--------------|--------|
+| T-18 | 4h | T-02 | ✅ |
+| T-19 | 5h | T-05, T-18 | ✅ |
+| T-20 | 4h | T-18, T-19 | ✅ |
+| T-21 | 3h | — | ✅ |
+| T-22 | 4h | T-21 | ⚠️ Parcial |
+| T-23 | 5h | T-08 | Pendiente |
+| T-24 | 3h | T-20, T-23 | Pendiente |
 | **Subtotal** | **28h** | |
 
 ### Fase 4: Hardening
@@ -1623,10 +1635,12 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | Fase | Horas | Estado |
 |------|-------|--------|
 | Fase 1: Core | 39h | ✅ Completada |
-| Fase 2: Data | 24h | Pendiente |
-| Fase 3: Integración | 28h | Pendiente |
+| Fase 2: Data | 24h | ✅ Completada |
+| Fase 3: Integración | 28h | ⚠️ En progreso |
 | Fase 4: Hardening | 10h | Pendiente |
-| **Total** | **101h** | |
+| **Total base** | **101h** | |
+| **Buffer de imprevistos** | **2h** | |
+| **Total planificado** | **103h** | |
 
 ### Camino crítico
 

@@ -6,11 +6,13 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 
 | Fase | Horas | Semana | Objetivo |
 |------|-------|--------|----------|
-| Fase 1: Core | 41h | 1-2 | Shell funcional con carga de MFEs y routing |
+| Fase 1: Core | 41h | 1-2 | Shell funcional con carga de MFEs y buffer |
 | Fase 2: Data | 24h | 3 | MFEs que consumen APIs reales |
-| Fase 3: Integración | 28h | 4 | Comunicación y theming entre MFEs |
+| Fase 3: Integración | 28h | 4 | Routing, comunicación y theming entre MFEs |
 | Fase 4: Hardening | 10h | 5 | Seguridad y CSP |
-| **Total** | **103h** | **5** | |
+| **Total planificado** | **103h** | **5** | |
+
+> El total base de tickets es 101h. Las 103h del plan incluyen 2h de buffer de imprevistos en la Fase 1.
 
 ---
 
@@ -39,6 +41,8 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 | T-10 | Test end-to-end de carga en runtime | 3h | T-09 |
 | — | Buffer de imprevistos | 2h | — |
 
+**Estado:** Completada. El routing definido en T-23 queda fuera de esta fase y continúa en la Fase 3.
+
 **Entregable:** Shell que carga MFE dashboard via import map en runtime.
 
 ---
@@ -60,6 +64,8 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 ---
 
 ## Fase 3: Integración (28h) — Semana 4
+
+**Estado actual:** En progreso. T-18 a T-21 están implementados; T-22 está parcial; T-23 y T-24 están pendientes.
 
 | Ticket | Tarea | Horas | Dependencias |
 |--------|-------|-------|--------------|
@@ -120,4 +126,4 @@ Después de la **Fase 1 (T-10)** tendrás un POC funcional: shell que carga un M
 |-----------|----------|
 | [08-user-stories.md](./08-user-stories.md) | User stories que originan los tickets |
 | [09-backlog.md](./09-backlog.md) | Priorización MoSCoW y fases |
-| [10-tickets.md](./10-tickets.md) | Detalle de tickets T-01 a T-10 |
+| [10-tickets.md](./10-tickets.md) | Detalle de tickets T-01 a T-28 y estado de ejecución |

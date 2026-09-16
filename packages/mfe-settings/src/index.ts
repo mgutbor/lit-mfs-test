@@ -1,6 +1,7 @@
 import { LitElement, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { MfeContext } from '@lit-mf/shared';
+import { getThemeTokens, tokensToStyleString } from '@lit-mf/shared';
 import { renderSettings } from './settings-view';
 
 const STORAGE_KEY = 'mfe-settings:theme';
@@ -10,7 +11,9 @@ export class MfeSettings extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: 1rem;
+      padding: var(--spacing-md, 16px);
+      font-family: var(--font-family, system-ui, -apple-system, sans-serif);
+      color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
     }
 
     .settings {
@@ -18,8 +21,9 @@ export class MfeSettings extends LitElement {
     }
 
     .settings h2 {
-      margin: 0 0 1.5rem 0;
-      font-size: 1.5rem;
+      margin: 0 0 var(--spacing-lg, 24px) 0;
+      font-size: var(--font-size-xl, 1.5rem);
+      font-weight: var(--font-weight-semibold, 600);
       color: var(--color-primary, #1976d2);
     }
 
@@ -27,13 +31,13 @@ export class MfeSettings extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 0;
+      padding: var(--spacing-md, 16px) 0;
       border-bottom: 1px solid var(--color-surface, #e0e0e0);
     }
 
     .setting-item label {
-      font-weight: 500;
-      color: var(--color-on-surface, #212121);
+      font-weight: var(--font-weight-medium, 500);
+      color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
     }
 
     .setting-value {
@@ -41,13 +45,13 @@ export class MfeSettings extends LitElement {
     }
 
     .theme-toggle {
-      padding: 0.5rem 1rem;
+      padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
       border: 1px solid var(--color-primary, #1976d2);
       border-radius: var(--border-radius, 4px);
       background: transparent;
       color: var(--color-primary, #1976d2);
       cursor: pointer;
-      font-size: 0.875rem;
+      font-size: var(--font-size-sm, 0.875rem);
       transition: all 0.2s ease;
     }
 
@@ -86,6 +90,16 @@ export class MfeSettings extends LitElement {
     };
   }
 
+  private applyThemeTokens() {
+    const tokens = tokensToStyleString(getThemeTokens(this.theme));
+    tokens.split(';').forEach((declaration) => {
+      const [prop, value] = declaration.split(':').map((s) => s.trim());
+      if (prop && value) {
+        this.style.setProperty(prop, value);
+      }
+    });
+  }
+
   toggleTheme() {
     const newTheme = this.theme === 'light' ? 'dark' : 'light';
     this.theme = newTheme;
@@ -100,6 +114,15 @@ export class MfeSettings extends LitElement {
 
   render() {
     return renderSettings.call(this);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.applyThemeTokens();
+  }
+
+  updated() {
+    this.applyThemeTokens();
   }
 }
 

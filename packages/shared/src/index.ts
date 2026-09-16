@@ -7,6 +7,8 @@ export type {
   ConfigMap,
 } from './types';
 
+export type { ThemeTokens } from './tokens';
+
 export { createEventBus } from './event-bus';
 export { buildUrl, buildQueryString } from './api';
-export { themeLight, themeDark } from './tokens';
+export { themeLight, themeDark, tokensLight, tokensDark, getThemeTokens, tokensToStyleString } from './tokens';

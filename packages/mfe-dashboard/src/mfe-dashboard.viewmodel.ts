@@ -2,38 +2,16 @@ import { LitElement, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Task } from '@lit/task';
 import type { MfeContext } from '@lit-mf/shared';
+import { getThemeTokens, tokensToStyleString } from '@lit-mf/shared';
 import { renderDashboard } from './mfe-dashboard.view';
 import type { Todo, Post } from './model/mfe-dashboard.model';
-
-const themeLight = css`
-  :host {
-    --color-primary: #1976d2;
-    --color-surface: #f5f5f5;
-    --color-background: #ffffff;
-    --color-on-primary: #ffffff;
-    --color-on-surface: #212121;
-    --color-text-primary: rgba(0, 0, 0, 0.87);
-    --color-text-secondary: rgba(0, 0, 0, 0.6);
-  }
-`;
-
-const themeDark = css`
-  :host {
-    --color-primary: #90caf9;
-    --color-surface: #1e1e1e;
-    --color-background: #121212;
-    --color-on-primary: #000000;
-    --color-on-surface: #ffffff;
-    --color-text-primary: rgba(255, 255, 255, 0.87);
-    --color-text-secondary: rgba(255, 255, 255, 0.6);
-  }
-`;
 
 const dashboardTheme = css`
   :host {
     display: block;
-    font-family: system-ui, -apple-system, sans-serif;
-    padding: 16px;
+    font-family: var(--font-family, system-ui, -apple-system, sans-serif);
+    color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
+    padding: var(--spacing-md, 16px);
   }
 
   .dashboard {
@@ -42,34 +20,40 @@ const dashboardTheme = css`
   }
 
   .dashboard h1 {
-    font-size: 1.5rem;
-    margin: 0 0 16px 0;
+    font-size: var(--font-size-xl, 1.5rem);
+    margin: 0 0 var(--spacing-md, 16px) 0;
     color: var(--color-primary, #1976d2);
+  }
+
+  .dashboard h2 {
+    font-size: var(--font-size-lg, 1.25rem);
+    margin: 0 0 var(--spacing-sm, 8px) 0;
+    color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
   }
 
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: var(--spacing-md, 16px);
+    margin-bottom: var(--spacing-lg, 24px);
   }
 
   .stat-card {
     background: var(--color-surface, #f5f5f5);
-    border-radius: 4px;
-    padding: 16px;
+    border-radius: var(--border-radius, 4px);
+    padding: var(--spacing-md, 16px);
   }
 
   .stat-card h3 {
-    margin: 0 0 4px 0;
-    font-size: 0.875rem;
+    margin: 0 0 var(--spacing-xs, 4px) 0;
+    font-size: var(--font-size-sm, 0.875rem);
     color: var(--color-text-secondary, rgba(0, 0, 0, 0.6));
   }
 
   .stat-card p {
     margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: var(--font-size-xl, 1.5rem);
+    font-weight: var(--font-weight-semibold, 600);
     color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
   }
 
@@ -80,21 +64,22 @@ const dashboardTheme = css`
 
   .orders-table th,
   .orders-table td {
-    padding: 8px 16px;
+    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
     text-align: left;
     border-bottom: 1px solid var(--color-surface, #f5f5f5);
+    color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
   }
 
   .orders-table th {
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold, 600);
     color: var(--color-text-secondary, rgba(0, 0, 0, 0.6));
   }
 
   .status {
     display: inline-block;
     padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
+    border-radius: var(--border-radius, 4px);
+    font-size: var(--font-size-xs, 0.75rem);
     text-transform: capitalize;
   }
 
@@ -111,24 +96,24 @@ const dashboardTheme = css`
   .posts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
+    gap: var(--spacing-md, 16px);
   }
 
   .post-card {
     background: var(--color-surface, #f5f5f5);
-    border-radius: 4px;
-    padding: 16px;
+    border-radius: var(--border-radius, 4px);
+    padding: var(--spacing-md, 16px);
   }
 
   .post-card h3 {
-    margin: 0 0 8px 0;
-    font-size: 1rem;
+    margin: 0 0 var(--spacing-sm, 8px) 0;
+    font-size: var(--font-size-md, 1rem);
     color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
   }
 
   .post-card p {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm, 0.875rem);
     color: var(--color-text-secondary, rgba(0, 0, 0, 0.6));
   }
 
@@ -139,9 +124,7 @@ const dashboardTheme = css`
 
 @customElement('mfe-dashboard')
 export class MfeDashboard extends LitElement {
-  static get styles() {
-    return [dashboardTheme, themeLight, themeDark];
-  }
+  static styles = dashboardTheme;
 
   @property({ type: String })
   locale = 'es';
@@ -198,12 +181,23 @@ export class MfeDashboard extends LitElement {
     });
   }
 
+  private applyThemeTokens() {
+    const tokens = tokensToStyleString(getThemeTokens(this.theme));
+    tokens.split(';').forEach((declaration) => {
+      const [prop, value] = declaration.split(':').map((s) => s.trim());
+      if (prop && value) {
+        this.style.setProperty(prop, value);
+      }
+    });
+  }
+
   render() {
     return renderDashboard.call(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
+    this.applyThemeTokens();
     this.subscribeToEvents();
     this.dispatchEvent(new CustomEvent('mfe:connected', {
       bubbles: true,
@@ -220,6 +214,10 @@ export class MfeDashboard extends LitElement {
       composed: true,
       detail: { name: 'mfe-dashboard' },
     }));
+  }
+
+  updated() {
+    this.applyThemeTokens();
   }
 }
 

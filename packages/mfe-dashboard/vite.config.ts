@@ -11,6 +11,11 @@ export default defineConfig({
     },
   },
   root: resolve(__dirname),
+  resolve: {
+    alias: {
+      '@lit-mf/shared': resolve(__dirname, '../shared/src'),
+    },
+  },
   plugins: [
     dts({
       include: ['src/**/*.ts'],
@@ -33,5 +38,8 @@ export default defineConfig({
   server: {
     port: 5174,
     strictPort: true,
+    fs: {
+      allow: [resolve(__dirname, '..')],
+    },
   },
 });

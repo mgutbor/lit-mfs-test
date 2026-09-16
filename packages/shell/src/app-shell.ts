@@ -1,10 +1,16 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import type { ConfigMap, MfeConfig } from '@lit-mf/shared';
-import { createEventBus } from '@lit-mf/shared';
+import { createEventBus, getThemeTokens } from '@lit-mf/shared';
 import { loadMFE } from './mfe-loader';
 
 const eventBus = createEventBus();
+const STORAGE_KEY = 'mfe-settings:theme';
+
+function getInitialTheme(): 'light' | 'dark' {
+  const savedTheme = localStorage.getItem(STORAGE_KEY);
+  return savedTheme === 'dark' ? 'dark' : 'light';
+}
 
 @customElement('lit-mf-shell')
 export class LitMfShell extends LitElement {
@@ -12,6 +18,8 @@ export class LitMfShell extends LitElement {
     :host {
       display: block;
       min-height: 100vh;
+      color: var(--color-text-primary, rgba(0, 0, 0, 0.87));
+      background: var(--color-background, #f5f5f5);
     }
     .shell-layout {
       display: grid;
@@ -59,7 +67,7 @@ export class LitMfShell extends LitElement {
   currentRoute = '/dashboard';
 
   @state()
-  currentTheme: 'light' | 'dark' = 'light';
+  currentTheme: 'light' | 'dark' = getInitialTheme();
 
   private configMap: ConfigMap | null = null;
 
@@ -78,6 +86,7 @@ export class LitMfShell extends LitElement {
   };
 
   async firstUpdated() {
+    this.applyThemeTokens();
     await this.loadConfigMap();
     this.subscribeToEvents();
     await this.loadMfe(this.currentRoute);
@@ -93,6 +102,8 @@ export class LitMfShell extends LitElement {
     this.unsubscribeTheme = eventBus.subscribe('mfe-settings:theme-changed', (data) => {
       const { theme } = data as { theme: 'light' | 'dark' };
       this.currentTheme = theme;
+      this.applyThemeTokens();
+      this.updateMountedMfeTheme(theme);
       eventBus.publish('shell:theme-changed', { theme });
     });
   }
@@ -139,7 +150,7 @@ export class LitMfShell extends LitElement {
 
     const context = {
       locale: 'es',
-      theme: 'light' as const,
+      theme: this.currentTheme,
       route,
       config: mfeConfig ?? {
         name: mfeSpecifier,
@@ -159,6 +170,22 @@ export class LitMfShell extends LitElement {
     );
   }
 
+  private updateMountedMfeTheme(theme: 'light' | 'dark') {
+    const mfe = this.shadowRoot?.querySelector<HTMLElement>('#mfe-container > *') as
+      | (HTMLElement & { theme?: 'light' | 'dark' })
+      | null;
+    if (mfe) {
+      mfe.theme = theme;
+    }
+  }
+
+  private applyThemeTokens() {
+    const tokens = getThemeTokens(this.currentTheme);
+    Object.entries(tokens).forEach(([property, value]) => {
+      this.style.setProperty(property, value);
+    });
+  }
+
   private unloadCurrentMfe() {
     if (this.cleanupMfe) {
       this.cleanupMfe();
@@ -172,40 +199,8 @@ export class LitMfShell extends LitElement {
   }
 
   render() {
-    const themeVars = this.currentTheme === 'dark'
-      ? {
-          '--color-primary': '#90caf9',
-          '--color-primary-dark': '#42a5f5',
-          '--color-primary-light': '#bbdefb',
-          '--color-accent': '#ffb74d',
-          '--color-background': '#121212',
-          '--color-surface': '#1e1e1e',
-          '--color-error': '#ef5350',
-          '--color-on-primary': '#000000',
-          '--color-on-surface': '#ffffff',
-          '--color-text-primary': 'rgba(255, 255, 255, 0.87)',
-          '--color-text-secondary': 'rgba(255, 255, 255, 0.6)',
-        }
-      : {
-          '--color-primary': '#1976d2',
-          '--color-primary-dark': '#1565c0',
-          '--color-primary-light': '#42a5f5',
-          '--color-accent': '#ff6f00',
-          '--color-background': '#ffffff',
-          '--color-surface': '#f5f5f5',
-          '--color-error': '#d32f2f',
-          '--color-on-primary': '#ffffff',
-          '--color-on-surface': '#212121',
-          '--color-text-primary': 'rgba(0, 0, 0, 0.87)',
-          '--color-text-secondary': 'rgba(0, 0, 0, 0.6)',
-        };
-
-    const style = Object.entries(themeVars)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join('; ');
-
     return html`
-      <div class="shell-layout" style="${style}">
+      <div class="shell-layout">
         <nav class="sidebar">
           <h2>MFE Shell</h2>
           <ul class="nav-links">

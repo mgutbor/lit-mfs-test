@@ -266,7 +266,7 @@ window.parent.postMessage({ type: 'action-completed', result }, '*');
 
 ### MFEs
 
-- [ ] Namespace en localStorage/sessionStorage
+- [x] Namespace en localStorage/sessionStorage mediante `createNamespacedStorage()`
 - [ ] No usar `innerHTML` con datos no sanitizados
 - [ ] Sanitizar datos de entrada (atributos, eventos)
 - [ ] Limpiar suscripciones en `disconnectedCallback`

@@ -1,15 +1,15 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import type { ConfigMap, MfeConfig } from '@lit-mf/shared';
-import { createEventBus, getThemeTokens } from '@lit-mf/shared';
+import { createEventBus, createNamespacedStorage, getThemeTokens } from '@lit-mf/shared';
 import { loadMFE, unloadMFE } from './mfe-loader';
 import { getInitialPath, resolveRoute, type RouteMatch } from './router';
 
 const eventBus = createEventBus();
-const STORAGE_KEY = 'mfe-settings:theme';
+const themeStorage = createNamespacedStorage('mfe-settings');
 
 function getInitialTheme(): 'light' | 'dark' {
-  const savedTheme = localStorage.getItem(STORAGE_KEY);
+  const savedTheme = themeStorage.getItem('theme');
   return savedTheme === 'dark' ? 'dark' : 'light';
 }
 

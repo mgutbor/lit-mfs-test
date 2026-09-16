@@ -1528,24 +1528,28 @@ packages/mfe-settings/src/index.ts
 
 ### Tareas
 
-- [ ] Crear helper `createNamespacedStorage(mfeName)` en shared
-- [ ] Implementar `getItem`, `setItem`, `removeItem` con prefijo
-- [ ] Usar en settings para persistir tema: `mfe-settings:theme`
-- [ ] Verificar que no hay colisiones entre MFEs
-- [ ] Documentar convención de namespaces
+- [x] Crear helper `createNamespacedStorage(mfeName)` en shared
+- [x] Implementar `getItem`, `setItem`, `removeItem` con prefijo
+- [x] Usar en settings para persistir tema: `mfe-settings:theme`
+- [x] Verificar que no hay colisiones entre MFEs
+- [x] Documentar convención de namespaces
 
 ### Código
 
 ```ts
 // shared/src/storage.ts
-export function createNamespacedStorage(mfeName: string) {
-  const prefix = `${mfeName}:`;
+export function createNamespacedStorage(namespace: string, storage: Storage = localStorage) {
+  const prefix = `${namespace}:`;
   return {
-    getItem: (key: string) => localStorage.getItem(prefix + key),
-    setItem: (key: string, value: string) => localStorage.setItem(prefix + key, value),
-    removeItem: (key: string) => localStorage.removeItem(prefix + key),
+    getItem: (key: string) => storage.getItem(`${prefix}${key}`),
+    setItem: (key: string, value: string) => storage.setItem(`${prefix}${key}`, value),
+    removeItem: (key: string) => storage.removeItem(`${prefix}${key}`),
   };
 }
+
+// mfe-settings
+const themeStorage = createNamespacedStorage('mfe-settings');
+themeStorage.setItem('theme', 'dark');
 ```
 
 ### Criterio de verificación
@@ -1554,7 +1558,18 @@ export function createNamespacedStorage(mfeName: string) {
 # En consola:
 # localStorage → 'mfe-settings:theme': 'dark'
 # No hay claves sin namespace de otros MFEs
+# El helper mantiene la clave existente y evita concatenaciones manuales
 ```
+
+### Resultado de implementación T-26 (2026-09-16)
+
+- Añadido `createNamespacedStorage()` en `packages/shared/src/storage.ts`.
+- Exportado el helper desde `@lit-mf/shared`.
+- Migrados `mfe-settings`, su entry point y el shell para usar el namespace `mfe-settings`.
+- La clave persistida continúa siendo `mfe-settings:theme`, por lo que no se rompe la preferencia existente.
+- No quedan accesos directos a `localStorage` fuera del helper compartido en el código de runtime.
+
+**Estado:** T-26 completado.
 
 ---
 

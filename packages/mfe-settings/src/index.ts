@@ -1,10 +1,10 @@
 import { LitElement, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { MfeContext } from '@lit-mf/shared';
-import { getThemeTokens, tokensToStyleString } from '@lit-mf/shared';
+import { createNamespacedStorage, getThemeTokens, tokensToStyleString } from '@lit-mf/shared';
 import { renderSettings } from './settings-view';
 
-const STORAGE_KEY = 'mfe-settings:theme';
+const themeStorage = createNamespacedStorage('mfe-settings');
 
 @customElement('mfe-settings')
 export class MfeSettings extends LitElement {
@@ -76,7 +76,7 @@ export class MfeSettings extends LitElement {
     el.locale = context.locale;
     el.route = context.route;
 
-    const savedTheme = localStorage.getItem(STORAGE_KEY);
+    const savedTheme = themeStorage.getItem('theme');
     if (savedTheme === 'light' || savedTheme === 'dark') {
       el.theme = savedTheme;
     }
@@ -103,7 +103,7 @@ export class MfeSettings extends LitElement {
   toggleTheme() {
     const newTheme = this.theme === 'light' ? 'dark' : 'light';
     this.theme = newTheme;
-    localStorage.setItem(STORAGE_KEY, newTheme);
+    themeStorage.setItem('theme', newTheme);
 
     this.dispatchEvent(new CustomEvent('mfe-settings:theme-changed', {
       detail: { theme: newTheme },

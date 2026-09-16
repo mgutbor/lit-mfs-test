@@ -262,7 +262,7 @@ window.parent.postMessage({ type: 'action-completed', result }, '*');
 - [x] `frame-ancestors 'none'` servido mediante header HTTP para prevenir clickjacking
 - [x] `object-src 'none'` para prevenir plugins
 - [x] URLs del import map con versiones pinneadas
-- [ ] Validación de contratos de eventos en desarrollo
+- [x] Validación de contratos de eventos en desarrollo
 
 ### MFEs
 
@@ -276,7 +276,7 @@ window.parent.postMessage({ type: 'action-completed', result }, '*');
 
 - [ ] CustomEvents dispatchados en el propio elemento
 - [ ] Naming convention `{mfe-name}:{action}`
-- [ ] Validación del `detail` de eventos recibidos
+- [x] Validación del `detail` de eventos recibidos
 - [ ] No confiar en datos de eventos sin validar
 
 ### Infraestructura

@@ -4,6 +4,7 @@ import type { ConfigMap, MfeConfig } from '@lit-mf/shared';
 import { createEventBus, createNamespacedStorage, getThemeTokens } from '@lit-mf/shared';
 import { loadMFE, unloadMFE } from './mfe-loader';
 import { getInitialPath, resolveRoute, type RouteMatch } from './router';
+import { validateEvent, type ThemeChangedEvent } from './event-validator';
 
 const eventBus = createEventBus();
 const themeStorage = createNamespacedStorage('mfe-settings');
@@ -116,7 +117,12 @@ export class LitMfShell extends LitElement {
 
   private subscribeToEvents() {
     this.unsubscribeTheme = eventBus.subscribe('mfe-settings:theme-changed', (data) => {
-      const { theme } = data as { theme: 'light' | 'dark' };
+      if (!validateEvent('mfe-settings:theme-changed', data)) {
+        console.warn('Rejected invalid event: mfe-settings:theme-changed');
+        return;
+      }
+
+      const { theme } = data as ThemeChangedEvent;
       this.currentTheme = theme;
       this.applyThemeTokens();
       this.updateMountedMfeTheme(theme);

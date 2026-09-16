@@ -90,6 +90,8 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 | T-27 | Validación de eventos en shell | 3h | T-18 |
 | T-28 | Test de seguridad y documentación final | 2h | T-25, T-26, T-27 |
 
+**Estado actual:** En progreso. T-25 está completado y validado en navegador; T-26 a T-28 siguen pendientes.
+
 **Entregable:** CSP funcionando, validación de eventos, storage namespaced.
 
 ---

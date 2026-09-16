@@ -105,6 +105,8 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 |----|-------|-------|
 | US-06 | Aislar MFEs con CSP | 10h |
 
+**Estado:** En progreso. T-25 está completado; quedan T-26, T-27 y T-28.
+
 **Entregable:** CSP estricta, validación de eventos, namespace en storage.
 
 ---

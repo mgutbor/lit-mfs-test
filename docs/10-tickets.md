@@ -1439,6 +1439,19 @@ Test end-to-end de la integración completa: routing, theming y comunicación en
 
 **Estado:** T-24 completado.
 
+### Resultado de implementación T-25 (2026-09-16)
+
+- Añadida una CSP al `index.html` del shell y al header HTTP del servidor Vite.
+- Bloqueados `unsafe-eval` y `unsafe-inline` en `script-src`.
+- Autorizado el import map inline mediante nonce.
+- Limitados los scripts a shell, MFEs locales y jsDelivr.
+- Limitadas las conexiones a shell, HMR local y DummyJSON.
+- Añadidas `base-uri`, `object-src` y `form-action` en el meta; `frame-ancestors 'none'` se sirve mediante header HTTP.
+- Añadido un favicon inline para evitar la petición 404 a `/favicon.ico`.
+- La comprobación en navegador no detecta violaciones CSP del shell. El aviso restante sobre `fonts.googleapis.com` procede de una extensión que renderiza contenido en `about:srcdoc`, no de la aplicación.
+
+**Estado:** T-25 completado.
+
 ---
 
 ## T-25: Definir CSP estricta en shell
@@ -1460,36 +1473,37 @@ packages/shell/index.html
 
 ### Tareas
 
-- [ ] Definir CSP en meta tag o header
-- [ ] `script-src 'self' https://cdn.jsdelivr.net` (sin unsafe-eval)
-- [ ] `style-src 'self' 'unsafe-inline'` (necesario para Lit)
-- [ ] `connect-src 'self' http://localhost:*` (desarrollo)
-- [ ] `frame-ancestors 'none'`
-- [ ] `base-uri 'self'`
-- [ ] `object-src 'none'`
-- [ ] Verificar que no hay violaciones de CSP en consola
+- [x] Definir CSP en meta tag del shell
+- [x] Configurar `script-src` sin `unsafe-eval` ni `unsafe-inline`, usando nonce para el import map
+- [x] Configurar `style-src 'self' 'unsafe-inline'` (necesario para Lit)
+- [x] Configurar `connect-src` para el shell, Vite HMR y DummyJSON
+- [x] Configurar `frame-ancestors 'none'` mediante header HTTP
+- [x] Configurar `base-uri 'self'`
+- [x] Configurar `object-src 'none'`
+- [x] Verificar en navegador que no hay violaciones de CSP en consola
 
 ### Política de producción
 
+La implementación actual es compatible con desarrollo local:
+
+```html
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; script-src 'self' 'nonce-<per-request>' https://cdn.jsdelivr.net https://mfe-dashboard.example.com https://mfe-settings.example.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://dummyjson.com; img-src 'self' data: https:; font-src 'self';"
+>
 ```
-Content-Security-Policy:
-  script-src 'self' https://cdn.jsdelivr.net;
-  style-src 'self' 'unsafe-inline';
-  connect-src 'self' https://api.example.com;
-  img-src 'self' data: https:;
-  font-src 'self' https://fonts.gstatic.com;
-  frame-ancestors 'none';
-  base-uri 'self';
-  form-action 'self';
-  object-src 'none';
-```
+
+El header HTTP de producción debe añadir `frame-ancestors 'none'`; esta directiva no tiene efecto dentro del meta tag.
+
+En producción, el nonce del import map debe generarse por respuesta desde el servidor. Los orígenes de los MFEs deben sustituir a los puertos `localhost` y `connect-src` debe limitarse a las APIs reales utilizadas.
 
 ### Criterio de verificación
 
 ```bash
+# Los scripts del shell, Lit y los MFEs se cargan correctamente
+# Las conexiones a DummyJSON funcionan
 # No hay errores CSP en la consola del navegador
-# Los scripts se cargan correctamente
-# Las conexiones a APIs funcionan
+# El import map inline se acepta mediante su nonce
 ```
 
 ---

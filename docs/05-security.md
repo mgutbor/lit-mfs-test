@@ -28,20 +28,23 @@ Los MFEs cargados via `import()` (nuestro caso) comparten el **mismo JavaScript 
 
 El shell define una CSP que aplica a **todos** los MFEs (comparten el mismo document).
 
-#### Política recomendada
+#### Política implementada en desarrollo
+
+El shell aplica las directivas generales mediante un `<meta http-equiv="Content-Security-Policy">` y sirve `frame-ancestors 'none'` mediante el header HTTP de Vite, porque esa directiva se ignora cuando se entrega desde un meta tag:
 
 ```
-Content-Security-Policy:
-  script-src 'self' https://cdn.jsdelivr.net;
-  style-src 'self' 'unsafe-inline';
-  connect-src 'self' https://api.example.com;
-  img-src 'self' data: https:;
-  font-src 'self' https://fonts.gstatic.com;
-  frame-ancestors 'none';
-  base-uri 'self';
-  form-action 'self';
-  object-src 'none';
+default-src 'self';
+base-uri 'self';
+object-src 'none';
+form-action 'self';
+script-src 'self' 'nonce-lit-mf-importmap' https://cdn.jsdelivr.net http://localhost:5174 http://localhost:5175;
+style-src 'self' 'unsafe-inline';
+connect-src 'self' http://localhost:5174 http://localhost:5175 https://dummyjson.com ws://localhost:5173 ws://localhost:5174 ws://localhost:5175;
+img-src 'self' data: https:;
+font-src 'self';
 ```
+
+El nonce permite el import map inline sin habilitar `unsafe-inline` para scripts. En producción debe generarse un nonce diferente por respuesta desde el servidor y sustituir los orígenes locales por los dominios reales.
 
 #### Ventaja sobre Module Federation
 
@@ -58,21 +61,9 @@ Con import maps (sin Module Federation), **no necesitamos** `'unsafe-eval'` ni `
 
 #### Desarrollo vs Producción
 
-```ts
-// Desarrollo: CSP más permisiva
-const devCSP = `
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' http://localhost:*;
-  style-src 'self' 'unsafe-inline';
-  connect-src 'self' http://localhost:* ws://localhost:*;
-`;
+La CSP de desarrollo mantiene las restricciones de script y solo añade los orígenes necesarios para Vite, los MFEs locales y DummyJSON. No se habilitan `unsafe-eval` ni `unsafe-inline` en `script-src`.
 
-// Producción: CSP estricta
-const prodCSP = `
-  script-src 'self' https://cdn.jsdelivr.net;
-  style-src 'self' 'unsafe-inline';
-  connect-src 'self' https://api.example.com;
-`;
-```
+En producción, el servidor debe generar el nonce por respuesta, enviar toda la política como header HTTP —incluido `frame-ancestors`— y limitar `script-src`, `connect-src` e `img-src` a los dominios reales de la aplicación. La política no debe depender únicamente de un meta tag.
 
 ### 2. Subresource Integrity (SRI)
 
@@ -266,11 +257,11 @@ window.parent.postMessage({ type: 'action-completed', result }, '*');
 
 ### Shell
 
-- [ ] CSP estricta definida en el HTML del shell
-- [ ] Sin `'unsafe-eval'` ni `'unsafe-inline'` en `script-src`
-- [ ] `frame-ancestors 'none'` para prevenir clickjacking
-- [ ] `object-src 'none'` para prevenir plugins
-- [ ] URLs del import map con versiones pinneadas
+- [x] CSP estricta definida en el HTML del shell
+- [x] Sin `'unsafe-eval'` ni `'unsafe-inline'` en `script-src`
+- [x] `frame-ancestors 'none'` servido mediante header HTTP para prevenir clickjacking
+- [x] `object-src 'none'` para prevenir plugins
+- [x] URLs del import map con versiones pinneadas
 - [ ] Validación de contratos de eventos en desarrollo
 
 ### MFEs

@@ -1883,10 +1883,21 @@ Ejecución validada:
 
 **Horas:** 4h · **Dependencias:** T-27, T-30
 
-- [ ] Definir el mapa de eventos en `shared`.
-- [ ] Tipar `publish` y `subscribe` según el topic.
-- [ ] Centralizar payloads de Settings, Dashboard y Shell.
-- [ ] Mantener validación runtime para módulos dinámicos.
+- [x] Definir el mapa de eventos en `shared`.
+- [x] Tipar `publish` y `subscribe` según el topic.
+- [x] Centralizar payloads de Settings, Dashboard y Shell.
+- [x] Mantener validación runtime para módulos dinámicos.
+
+### Resultado de implementación T-33 (2026-09-17)
+
+- Añadido `EventMap` en `packages/shared/src/types.ts` con los contratos de eventos de Dashboard, Settings y Shell.
+- `publish()` exige el payload correcto para topics conocidos.
+- `subscribe()` expone el payload tipado al handler para topics conocidos.
+- Los topics dinámicos siguen permitidos, pero sus payloads se reciben como `unknown`.
+- La validación runtime de `mfe-settings:theme-changed` se mantiene en el shell.
+- Añadidos tests de runtime y comprobación de inferencia de tipos para el event bus.
+
+**Estado:** T-33 completado. Fase 6 en progreso.
 
 #### T-34: Validar `config-map` en runtime
 

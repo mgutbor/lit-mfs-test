@@ -1,13 +1,13 @@
-import type { EventBus } from './types';
+import type { EventBus, EventMap } from './types';
 
-export function createEventBus(): EventBus {
+export function createEventBus<Events extends EventMap = EventMap>(): EventBus<Events> {
   return {
-    publish(topic: string, data?: unknown) {
-      const event = new CustomEvent(topic, { detail: data });
+    publish(topic, ...data) {
+      const event = new CustomEvent(topic, { detail: data[0] });
       document.dispatchEvent(event);
     },
 
-    subscribe(topic: string, handler: (data: unknown) => void) {
+    subscribe(topic, handler) {
       const listener = (event: Event) => {
         const customEvent = event as CustomEvent;
         handler(customEvent.detail);

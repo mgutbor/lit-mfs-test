@@ -1,6 +1,7 @@
 export type {
   MfeContext,
   MfeConfig,
+  EventMap,
   EventBus,
   EndpointConfig,
   MfeModule,

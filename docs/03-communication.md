@@ -134,21 +134,23 @@ Para comunicación bidireccional y eventos broadcast que afectan a múltiples MF
 ### Implementación
 
 ```ts
+// shared/src/types.ts
+export interface EventMap {
+  'mfe-settings:theme-changed': { theme: 'light' | 'dark' };
+  'shell:theme-changed': { theme: 'light' | 'dark' };
+  'shell:locale-changed': { locale: string };
+}
+
 // shared/src/event-bus.ts
-export function createEventBus(): EventBus {
+export function createEventBus<Events extends EventMap = EventMap>(): EventBus<Events> {
   return {
-    on(event: string, handler: EventListenerOrEventListenerObject) {
-      document.addEventListener(event, handler);
+    publish(topic, data) {
+      document.dispatchEvent(new CustomEvent(topic, { detail: data }));
     },
-    off(event: string, handler: EventListenerOrEventListenerObject) {
-      document.removeEventListener(event, handler);
-    },
-    emit(event: string, detail?: unknown) {
-      document.dispatchEvent(new CustomEvent(event, {
-        detail,
-        bubbles: true,
-        composed: true,
-      }));
+    subscribe(topic, handler) {
+      const listener = (event: Event) => handler((event as CustomEvent).detail);
+      document.addEventListener(topic, listener);
+      return () => document.removeEventListener(topic, listener);
     },
   };
 }
@@ -185,9 +187,9 @@ class DashboardWidget extends LitElement {
     super.connectedCallback();
     
     // Escuchar cambios de tema del shell
-    this.context.eventBus.on('shell:theme-changed', ((e: CustomEvent) => {
-      this.theme = e.detail.theme;
-    }) as EventListener);
+    this.context.subscribe('shell:theme-changed', ({ theme }) => {
+      this.theme = theme;
+    });
   }
 
   disconnectedCallback() {
@@ -203,13 +205,13 @@ class DashboardWidget extends LitElement {
 
 ```ts
 // Shell notifica cambio de tema a todos los MFEs
-context.eventBus.emit('shell:theme-changed', { theme: 'dark' });
+context.publish('shell:theme-changed', { theme: 'dark' });
 
 // Shell notifica cambio de idioma
-context.eventBus.emit('shell:locale-changed', { locale: 'ca' });
+context.publish('shell:locale-changed', { locale: 'ca' });
 
 // Shell notifica logout
-context.eventBus.emit('shell:user-logged-out', {});
+context.publish('shell:user-logged-out', {});
 ```
 
 #### Comunicación MFE ↔ MFE (vía event bus)
@@ -252,14 +254,14 @@ Para datos que cambian frecuentemente o que requieren reacción inmediata:
 
 ```ts
 // Shell emite cambio de tema
-context.eventBus.emit('shell:theme-changed', { theme: 'dark' });
+context.publish('shell:theme-changed', { theme: 'dark' });
 
 // Cada MFE escucha y actualiza su estado interno
 class DashboardWidget extends LitElement {
   connectedCallback() {
-    this.context.eventBus.on('shell:theme-changed', ((e: CustomEvent) => {
-      this.theme = e.detail.theme;
-    }) as EventListener);
+    this.context.subscribe('shell:theme-changed', ({ theme }) => {
+      this.theme = theme;
+    });
   }
 }
 ```

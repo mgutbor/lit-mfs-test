@@ -2,7 +2,7 @@ import { LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Task } from '@lit/task';
 import type { MfeContext } from '@lit-mf/shared';
-import { getThemeTokens, tokensToStyleString } from '@lit-mf/shared';
+import { createApiClient, getThemeTokens, tokensToStyleString } from '@lit-mf/shared';
 import { renderDashboard } from './mfe-dashboard.view';
 import { dashboardTheme } from './css/mfe-dashboard-theme.css';
 import type { Todo, Post } from './model/mfe-dashboard.model';
@@ -26,18 +26,22 @@ export class MfeDashboard extends LitElement {
   private unsubscribeTheme?: () => void;
 
   readonly todosTask = new Task(this, {
-    task: async ([baseUrl, endpoint], { signal }) => {
-      const url = `${baseUrl}${endpoint}`;
-      const response = await fetch(url, { signal });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const payload = await response.json() as {
-        todos: Array<{
-          userId: number;
-          id: number;
-          todo: string;
-          completed: boolean;
-        }>;
-      };
+    task: async ([baseUrl], { signal }) => {
+      const config = this.context?.config;
+      const endpointConfig = config?.endpoints?.orders;
+      if (!config || !endpointConfig) {
+        throw new Error('Dashboard orders endpoint is not configured');
+      }
+
+      const payload = await createApiClient({ ...config, baseUrl: baseUrl || config.baseUrl })
+        .request<{
+          todos: Array<{
+            userId: number;
+            id: number;
+            todo: string;
+            completed: boolean;
+          }>;
+        }>(endpointConfig, { signal });
 
       return payload.todos.map((todo) => ({
         userId: todo.userId,
@@ -53,11 +57,15 @@ export class MfeDashboard extends LitElement {
   });
 
   readonly postsTask = new Task(this, {
-    task: async ([baseUrl, endpoint], { signal }) => {
-      const url = `${baseUrl}${endpoint}`;
-      const response = await fetch(url, { signal });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const payload = await response.json() as { posts: Post[] };
+    task: async ([baseUrl], { signal }) => {
+      const config = this.context?.config;
+      const endpointConfig = config?.endpoints?.analytics;
+      if (!config || !endpointConfig) {
+        throw new Error('Dashboard posts endpoint is not configured');
+      }
+
+      const payload = await createApiClient({ ...config, baseUrl: baseUrl || config.baseUrl })
+        .request<{ posts: Post[] }>(endpointConfig, { signal });
       return payload.posts;
     },
     args: () => [

@@ -121,9 +121,9 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 | T-35 | Crear API client compartido | 5h | T-34 |
 | T-36 | Alinear contratos y documentación técnica | 3h | T-33, T-34 |
 
-**Estado actual:** En progreso. T-33 y T-34 completados; T-35 y T-36 pendientes.
+**Estado actual:** En progreso. T-33, T-34 y T-35 completados; T-36 pendiente.
 
-**Entregables T-33/T-34:** `EventMap` compartido, event bus tipado por topic, validación runtime de eventos y validación fail-closed del `config-map` con allowlist de orígenes.
+**Entregables T-33/T-34/T-35:** `EventMap` compartido, event bus tipado por topic, validación runtime de eventos, validación fail-closed del `config-map` con allowlist de orígenes y API client compartido con errores normalizados.
 
 ## Fase 7: Production Readiness (15h) — Semana 8
 

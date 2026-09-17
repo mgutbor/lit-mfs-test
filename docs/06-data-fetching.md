@@ -423,6 +423,31 @@ this._ordersTask.render({
 
 ---
 
+## API client compartido
+
+Los MFEs deben usar `createApiClient()` para ejecutar peticiones configuradas en `MfeConfig`. El cliente centraliza URL, método, headers, timeout, cancelación y errores; los adapters del MFE siguen siendo responsables de normalizar el formato concreto de cada API externa.
+
+```ts
+import { createApiClient } from '@lit-mf/shared';
+
+const client = createApiClient(this.context.config);
+const payload = await client.request<TodosResponse>(
+  this.context.config.endpoints.orders,
+  { signal },
+);
+```
+
+Los errores se exponen como `ApiClientError` con estos códigos:
+
+| Código | Significado |
+|--------|-------------|
+| `HTTP_ERROR` | El servidor respondió con un status no exitoso |
+| `NETWORK_ERROR` | Fallo de red o transporte |
+| `TIMEOUT` | Se agotó el timeout definido en el endpoint |
+| `ABORTED` | El consumidor canceló la petición mediante `AbortSignal` |
+
+El cliente rechaza URLs de endpoint absolutas mediante la validación del `config-map`; los endpoints deben ser rutas relativas a `baseUrl`.
+
 ## Caching y performance
 
 ### HTTP Cache Headers

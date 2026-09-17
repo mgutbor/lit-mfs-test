@@ -1925,10 +1925,21 @@ Ejecución validada:
 
 **Horas:** 5h · **Dependencias:** T-34
 
-- [ ] Centralizar construcción de URLs y query strings.
-- [ ] Aplicar método, headers y timeout de `EndpointConfig`.
-- [ ] Normalizar errores HTTP y de red.
-- [ ] Mantener adapters específicos para respuestas de APIs externas.
+- [x] Centralizar construcción de URLs y query strings.
+- [x] Aplicar método, headers y timeout de `EndpointConfig`.
+- [x] Normalizar errores HTTP y de red.
+- [x] Mantener adapters específicos para respuestas de APIs externas.
+
+### Resultado de implementación T-35 (2026-09-17)
+
+- Añadido `createApiClient()` en `packages/shared/src/api.ts`.
+- El cliente combina `baseUrl`, parámetros de ruta y query params, y aplica método y headers del endpoint.
+- El timeout del endpoint se combina con el `AbortSignal` del consumidor.
+- Los errores se normalizan mediante `ApiClientError` con códigos `HTTP_ERROR`, `NETWORK_ERROR`, `TIMEOUT` y `ABORTED`.
+- Dashboard usa el cliente compartido; sus adapters siguen transformando las respuestas `{ todos }` y `{ posts }` de DummyJSON.
+- Añadidos tests para URL, headers, respuestas HTTP, errores de red, timeout y cancelación.
+
+**Estado:** T-35 completado. Fase 6 en progreso.
 
 #### T-36: Alinear contratos y documentación técnica
 

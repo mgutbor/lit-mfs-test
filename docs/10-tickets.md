@@ -1945,9 +1945,13 @@ Ejecución validada:
 
 **Horas:** 3h · **Dependencias:** T-33, T-34
 
-- [ ] Eliminar discrepancias entre `shared/src/types.ts` y `docs/02-mfe-contract.md`.
-- [ ] Documentar el contrato real de `mount`, `MfeContext` y `EventBus`.
-- [ ] Documentar compatibilidad de browser y estrategia de versionado.
+- [x] Eliminar discrepancias entre `shared/src/types.ts` y `docs/02-mfe-contract.md`.
+- [x] Documentar el contrato real de `mount`, `MfeContext` y `EventBus`.
+- [x] Documentar compatibilidad de browser, límites de runtime y estrategia de versionado.
+
+**Resultado:** `docs/02-mfe-contract.md`, `docs/03-communication.md` y `docs/06-data-fetching.md` reflejan las interfaces actuales de `@lit-mf/shared`, el loader cancelable, el event bus tipado con fallback dinámico, la validación del `config-map` y el API client compartido.
+
+**Estado:** T-36 completado. Fase 6 completada.
 
 ### Fase 7: Production Readiness (15h)
 

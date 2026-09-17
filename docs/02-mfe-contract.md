@@ -1,289 +1,141 @@
-# Contract de Microfrontend
+# Contrato de Microfrontend
 
-API surface de cada MFE: firma de mount/unmount, tipos, atributos soportados y eventos emitidos.
+Este documento describe el contrato público que comparten el shell y los MFEs. La fuente de verdad del contrato TypeScript es `packages/shared/src/types.ts`; los MFEs no deben duplicar estas interfaces.
 
-## Firma del entry point
+## Entry point
 
-Cada MFE exporta desde su `entry.ts`:
+Cada MFE expone un módulo ESM con una función `mount`:
 
 ```ts
-// Contract estándar
-export function mount(container: HTMLElement, context?: MfeContext): MfeUnmount;
-export function unmount?(): void;
+import type { MfeContext } from '@lit-mf/shared';
 
-type MfeUnmount = () => void;
+export function mount(
+  container: HTMLElement,
+  context: MfeContext,
+): (() => void) | { unmount: () => void };
+
+// Opcional: export function unmount(): void;
 ```
 
-### `mount(container, context?)`
+- `container` es el elemento que el shell reserva para el MFE.
+- `context` es obligatorio y contiene la configuración y las capacidades compartidas.
+- `mount` debe añadir el contenido del MFE al container y devolver una función o un objeto `{ unmount }`.
+- El shell ejecuta el cleanup devuelto al cambiar de ruta o al desmontar el MFE.
+- `unmount` es opcional y solo representa una capacidad adicional del módulo; el loader usa el cleanup devuelto por `mount` como contrato principal.
 
-- **`container`**: Elemento DOM donde el MFE debe renderizarse. El MFE append su custom element como hijo de este container.
-- **`context`**: Datos compartidos del shell (locale, theme, user, eventBus). Opcional para MFEs que no necesitan contexto.
-- **Retorna**: Función de cleanup que el shell llama al desmontar el MFE.
+El cleanup debe ser idempotente: ejecutarlo más de una vez no debe lanzar errores ni dejar listeners activos.
 
-### `unmount()` (opcional)
-
-Limpieza explícita adicional. El shell siempre llama a la cleanup de `mount` primero; `unmount` solo se usa si hay recursos que liberar fuera del scope del container.
-
-## MfeContext
+## `MfeContext`
 
 ```ts
 interface MfeContext {
-  /** Locale activo (ej: 'es', 'en', 'ca') */
   locale: string;
-  
-  /** Tema visual (ej: 'light', 'dark', 'auto') */
-  theme: 'light' | 'dark' | 'auto';
-  
-  /** Datos del usuario autenticado */
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    roles: string[];
-  };
-  
-  /** Event bus compartido para comunicación entre MFEs */
-  eventBus: EventBus;
-  
-  /** Configuración de endpoints API para este MFE (desde config-map.json) */
-  config: Record<string, EndpointConfig>;
-  
-  /** Token de autenticación (solo para MFEs que lo necesiten) */
-  authToken?: string;
+  theme: 'light' | 'dark';
+  route: string;
+  container: HTMLElement;
+  config: MfeConfig;
+  onNavigate: (path: string) => void;
+  publish: EventBus['publish'];
+  subscribe: EventBus['subscribe'];
+}
+```
+
+El shell construye el contexto completo al montar el MFE. `container` es añadido por `loadMFE`; los MFEs no deben sustituirlo ni montar fuera de él.
+
+### Reglas del contexto
+
+- `theme` solo admite `light` o `dark`; no existe el valor `auto` en el contrato actual.
+- `route` contiene la ruta resuelta por el shell.
+- `config` contiene la configuración del MFE, no el `ConfigMap` global completo.
+- `onNavigate` es la única vía de navegación que deben usar los MFEs. El shell es el único dueño de `window.history`.
+- `publish` y `subscribe` son las capacidades del event bus. No se inyecta una propiedad `eventBus` independiente.
+
+## Configuración
+
+```ts
+interface MfeConfig {
+  name: string;
+  baseUrl: string;
+  endpoints: Record<string, EndpointConfig>;
 }
 
 interface EndpointConfig {
-  /** Ruta del endpoint (relativa a baseUrl del config-map) */
   endpoint: string;
-  /** Método HTTP */
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  /** Timeout en milisegundos */
   timeout: number;
-  /** Headers por defecto (opcional) */
   headers?: Record<string, string>;
 }
+```
 
+El shell valida el `config-map.json` antes de pasarlo al MFE. Los endpoints deben ser rutas relativas que empiezan por `/`; `baseUrl` debe ser un origen HTTP(S) permitido. Los MFEs deben usar `createApiClient(config)` en lugar de llamar directamente a `fetch`.
+
+## Event bus
+
+```ts
 interface EventBus {
-  on(event: string, handler: EventListenerOrEventListenerObject): void;
-  off(event: string, handler: EventListenerOrEventListenerObject): void;
-  emit(event: string, detail?: unknown): void;
+  publish: <Topic extends string>(
+    topic: Topic,
+    ...data: Topic extends keyof EventMap
+      ? [data: EventMap[Topic]]
+      : [data?: unknown]
+  ) => void;
+
+  subscribe: <Topic extends string>(
+    topic: Topic,
+    handler: (data: Topic extends keyof EventMap ? EventMap[Topic] : unknown) => void,
+  ) => () => void;
 }
 ```
 
-**Nota:** El campo `config` se inyecta desde el `config-map.json` (ver [06-data-fetching.md](./06-data-fetching.md)). El shell carga el config map completo y pasa **solo la sección del MFE** en `context.config`.
+Los topics incluidos en `EventMap` tienen payload tipado. Los topics no declarados siguen permitidos para facilitar extensiones dinámicas, pero su payload es `unknown` al consumirlo y debe validarse mediante narrowing o un validador runtime.
 
-## Atributos del custom element
+Eventos conocidos actualmente:
 
-Cada MFE expone atributos HTML que el shell puede configurar. Atributos son strings; la serialización/deserialización es responsabilidad del MFE.
+| Topic | Payload |
+|---|---|
+| `mfe-dashboard:order-selected` | `{ orderId: number; total?: number; currency?: string }` |
+| `mfe-dashboard:filter-changed` | `{ filters: Record<string, unknown> }` |
+| `mfe-settings:theme-changed` | `{ theme: 'light' \| 'dark' }` |
+| `mfe-settings:locale-changed` | `{ locale: string }` |
+| `mfe-settings:profile-updated` | `{ userId: string }` |
+| `shell:theme-changed` | `{ theme: 'light' \| 'dark' }` |
+| `shell:locale-changed` | `{ locale: string }` |
+| `shell:user-logged-out` | `{}` |
 
-### Atributos comunes
-
-| Atributo | Tipo | Descripción |
-|----------|------|-------------|
-| `locale` | `string` | Locale activo |
-| `theme` | `'light' \| 'dark' \| 'auto'` | Tema visual |
-| `user-id` | `string` | ID del usuario |
-| `route` | `string` | Sub-ruta interna del MFE |
-| `base-path` | `string` | Prefijo de ruta base |
-
-### Atributos específicos del MFE
-
-Cada MFE puede definir atributos adicionales. Ejemplo para `mfe-dashboard`:
-
-| Atributo | Tipo | Descripción |
-|----------|------|-------------|
-| `dashboard-id` | `string` | ID del dashboard a mostrar |
-| `date-range` | `string` | Rango de fechas (formato ISO) |
-
-### Ejemplo de implementación en Lit
+El bus se implementa con `CustomEvent` sobre `document`. `subscribe` devuelve una función de cleanup que debe ejecutarse cuando el componente se desconecta.
 
 ```ts
-@customElement('mfe-dashboard')
-class DashboardWidget extends LitElement {
-  @property({ type: String, reflect: true })
-  locale = 'en';
+const unsubscribe = context.subscribe('shell:theme-changed', ({ theme }) => {
+  element.theme = theme;
+});
 
-  @property({ type: String, reflect: true })
-  theme: 'light' | 'dark' | 'auto' = 'light';
-
-  @property({ type: String, reflect: true })
-  userId = '';
-
-  @property({ type: String, reflect: true })
-  route = '/';
-
-  @property({ type: String, reflect: true })
-  basePath = '/dashboard';
-}
+// En disconnectedCallback:
+unsubscribe();
 ```
 
-`reflect: true` permite que el shell lea los atributos con `el.getAttribute()` y que los atributos se actualicen cuando cambian las propiedades.
+La validación TypeScript no sustituye la validación runtime: el shell valida explícitamente el evento `mfe-settings:theme-changed` antes de propagar el cambio de tema.
 
-## Eventos emitidos
+## Custom elements y eventos DOM
 
-### Naming convention
+Los eventos de interacción propios de un MFE se emiten desde su custom element con `bubbles: true` y `composed: true` cuando deban cruzar un Shadow DOM. El event bus es el mecanismo separado para broadcasts compartidos. No se deben confundir ambos canales.
 
-```
-{mfe-name}:{action}
-```
+Los MFEs actuales exponen principalmente las propiedades `locale`, `theme` y `route`. Los atributos adicionales solo forman parte del contrato cuando estén implementados en el componente correspondiente.
 
-- Solo minúsculas, números, guiones y puntos
-- Debe empezar con el nombre del MFE
-- Debe contener al menos un nivel adicional después del nombre del MFE
-- Formato: reverse domain name notation (simplificado)
+## Storage
 
-### Ejemplos
-
-| Evento | MFE | Descripción |
-|--------|-----|-------------|
-| `mfe-dashboard:order-selected` | dashboard | Usuario selecciona un pedido |
-| `mfe-dashboard:filter-changed` | dashboard | Cambio de filtros |
-| `mfe-settings:theme-changed` | settings | Cambio de tema |
-| `mfe-settings:locale-changed` | settings | Cambio de idioma |
-| `mfe-settings:profile-updated` | settings | Actualización de perfil |
-
-### Formato del CustomEvent
+Todo acceso persistente debe usar `createNamespacedStorage`:
 
 ```ts
-// El evento DEBE dispatcharse en el propio elemento MFE
-this.dispatchEvent(new CustomEvent('mfe-dashboard:order-selected', {
-  detail: {
-    orderId: 42,
-    total: 89.99,
-    currency: 'EUR',
-  },
-  bubbles: true,    // Permite que burbujee hacia el shell
-  composed: true,   // Permite cruzar Shadow DOM boundaries
-}));
+const storage = createNamespacedStorage('mfe-settings');
+storage.setItem('theme', 'dark'); // clave física: mfe-settings:theme
 ```
 
-### Schema de eventos
+Un MFE no debe escribir claves globales que puedan colisionar con otros MFEs o con el shell.
 
-Cada MFE documenta sus eventos con JSON Schema:
+## Compatibilidad y versionado
 
-```json
-{
-  "mfe-dashboard:order-selected": {
-    "description": "Emitted when a user selects an order in the dashboard",
-    "schema": {
-      "type": "object",
-      "required": ["orderId"],
-      "properties": {
-        "orderId": { "type": "integer", "description": "Unique order identifier" },
-        "total": { "type": "number", "description": "Order total amount" },
-        "currency": { "type": "string", "enum": ["EUR", "USD", "GBP"] }
-      },
-      "additionalProperties": false
-    }
-  }
-}
-```
-
-## Storage namespaced
-
-Si un MFE necesita persistir datos en localStorage o sessionStorage, DEBE namespaced:
-
-```ts
-// ❌ Mal - colisiona con otros MFEs y el shell
-localStorage.setItem('user', JSON.stringify(user));
-
-// ✅ Bien - namespace con el nombre del MFE
-localStorage.setItem('mfe-dashboard:filters', JSON.stringify(filters));
-```
-
-### Formato del namespace
-
-```
-{mfe-name}:{key}
-```
-
-Ejemplos:
-- `mfe-dashboard:filters`
-- `mfe-dashboard:sort-preference`
-- `mfe-settings:theme`
-
-## Error handling
-
-Si un MFE recibe configuración inválida o eventos erróneos:
-
-1. **No debe crashear**. Renderiza un fallback o placeholder.
-2. **Debe loguear** el error con contexto (qué atributo/evento falló).
-3. **Debe emitir** un evento de error estandarizado:
-
-```ts
-this.dispatchEvent(new CustomEvent('mfe-dashboard:error', {
-  detail: {
-    code: 'INVALID_CONFIG',
-    message: 'Missing required attribute: user-id',
-    context: { attribute: 'user-id', received: null },
-  },
-  bubbles: true,
-  composed: true,
-}));
-```
-
-## Contracts en TypeScript
-
-### shared/src/types.ts
-
-```ts
-// Tipos compartidos para todos los MFEs
-export interface MfeContext {
-  locale: string;
-  theme: 'light' | 'dark' | 'auto';
-  user: MfeUser;
-  eventBus: EventBus;
-  config: Record<string, EndpointConfig>;
-  authToken?: string;
-}
-
-export interface EndpointConfig {
-  endpoint: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  timeout: number;
-  headers?: Record<string, string>;
-}
-
-export interface MfeUser {
-  id: string;
-  name: string;
-  email: string;
-  roles: string[];
-}
-
-export interface EventBus {
-  on(event: string, handler: EventListenerOrEventListenerObject): void;
-  off(event: string, handler: EventListenerOrEventListenerObject): void;
-  emit(event: string, detail?: unknown): void;
-}
-
-export type MfeUnmount = () => void;
-
-export interface MfeModule {
-  mount: (container: HTMLElement, context?: MfeContext) => MfeUnmount;
-  unmount?: () => void;
-}
-```
-
-### shared/src/event-types.ts
-
-```ts
-// Eventos emitidos por cada MFE
-export interface DashboardEvents {
-  'mfe-dashboard:order-selected': { orderId: number; total?: number; currency?: string };
-  'mfe-dashboard:filter-changed': { filters: Record<string, unknown> };
-}
-
-export interface SettingsEvents {
-  'mfe-settings:theme-changed': { theme: 'light' | 'dark' | 'auto' };
-  'mfe-settings:locale-changed': { locale: string };
-  'mfe-settings:profile-updated': { userId: string };
-}
-
-// Eventos emitidos por el shell
-export interface ShellEvents {
-  'shell:theme-changed': { theme: 'light' | 'dark' | 'auto' };
-  'shell:locale-changed': { locale: string };
-  'shell:user-logged-out': {};
-}
-```
+- El runtime requiere ESM, `CustomEvent`, `AbortController`, Shadow DOM y `URLPattern` nativo para el router actual.
+- Los import maps se usan para resolver `lit`, `@lit/context`, `@lit-mf/shared` y los MFEs. La compatibilidad efectiva depende del navegador y del servidor que entrega los bundles.
+- El proyecto no incorpora actualmente un polyfill de `URLPattern` ni un fallback de import maps; los navegadores objetivo deben soportar estas APIs o el deployment debe añadirlos explícitamente.
+- Los cambios incompatibles en `MfeContext`, `EventMap`, `EndpointConfig` o `MfeModule` requieren coordinar shell, MFEs y `shared`. Deben tratarse como cambios major del contrato.
+- Añadir un nuevo topic es compatible si se mantiene el fallback dinámico; para obtener tipado estático debe añadirse también a `EventMap`.

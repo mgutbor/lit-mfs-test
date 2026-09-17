@@ -114,7 +114,7 @@ Backlog del proyecto Lit Microfrontends priorizado con metodología MoSCoW.
 | Fase | Objetivo | Tickets | Horas | Estado |
 |------|----------|---------|-------|--------|
 | Fase 5: Quality & Reliability | Tests automatizados y loader robusto | T-29 a T-32 | 18h | ✅ Completada |
-| Fase 6: Runtime Contracts | Event bus, config y API client tipados | T-33 a T-36 | 16h | En progreso (T-33/T-34/T-35 ✅) |
+| Fase 6: Runtime Contracts | Event bus, config y API client tipados | T-33 a T-36 | 16h | ✅ Completada |
 | Fase 7: Production Readiness | Shell, headers, observabilidad e aislamiento | T-37 a T-40 | 15h | Pendiente |
 
 **Extensión posterior al POC:** 49h. El total ampliado pasa a 150h de tickets y 152h incluyendo el buffer original.

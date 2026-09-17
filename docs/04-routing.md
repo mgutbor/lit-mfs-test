@@ -273,7 +273,7 @@ class MiniRouter {
 
 ```
 1. Usuario hace click en link "Analytics" dentro de mfe-dashboard
-2. MFE llama a context.eventBus.emit('mfe-dashboard:navigate', { path: '/analytics' })
+2. MFE llama a context.onNavigate('/dashboard/analytics')
    O el shell intercepta el click si es un <a> externo
 3. Shell recibe la navegación
 4. Shell llama a window.history.pushState({}, '', '/dashboard/analytics')

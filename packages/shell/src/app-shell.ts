@@ -178,6 +178,7 @@ export class LitMfShell extends LitElement {
   private async loadMfe(route: RouteMatch) {
     const requestId = ++this.loadRequestId;
     this.unloadCurrentMfe();
+    await this.updateComplete;
 
     const container = this.shadowRoot?.querySelector('#mfe-container');
     if (!container) {

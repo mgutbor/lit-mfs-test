@@ -78,9 +78,12 @@ pnpm test:watch
 
 # Ejecutar tests con cobertura V8
 pnpm test:coverage
+
+# Ejecutar smoke tests end-to-end en Chromium
+pnpm test:e2e
 ```
 
-Los tests se localizan en `tests/**/*.test.ts` y `packages/**/*.test.ts`. El pipeline de CI ejecuta la cobertura y el build mediante `.github/workflows/ci.yml`.
+Los tests unitarios se localizan en `tests/**/*.test.ts` y `packages/**/*.test.ts`. Los smoke tests end-to-end están en `e2e/` y arrancan los servidores de desarrollo automáticamente. El pipeline de CI ejecuta cobertura, smoke tests E2E y build mediante `.github/workflows/ci.yml`.
 
 ## Producción
 

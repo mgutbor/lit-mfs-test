@@ -1738,7 +1738,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 
 | Fase | Horas | Estado |
 |------|-------|--------|
-| Fase 5: Quality & Reliability | 18h | En progreso (T-29 ✅) |
+| Fase 5: Quality & Reliability | 18h | ✅ Completada |
 | Fase 6: Runtime Contracts | 16h | Pendiente |
 | Fase 7: Production Readiness | 15h | Pendiente |
 | **Extensión posterior al POC** | **49h** | |
@@ -1751,7 +1751,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 | Fase 2: Data | 24h | ✅ Completada |
 | Fase 3: Integración | 28h | ✅ Completada |
 | Fase 4: Hardening | 10h | ✅ Completada |
-| Fases 5-7: Extensión posterior | 49h | Pendiente |
+| Fases 5-7: Extensión posterior | 49h | En progreso (Fase 5 ✅) |
 | **Total base ampliado** | **150h** | |
 | **Buffer de imprevistos original** | **2h** | |
 | **Total planificado ampliado** | **152h** | |
@@ -1852,10 +1852,28 @@ Las siguientes fases amplían el POC ya completado. Sus tickets son propuestas p
 
 **Horas:** 6h · **Dependencias:** T-30, T-31
 
-- [ ] Validar navegación entre Dashboard y Settings.
-- [ ] Validar cambio y persistencia del tema.
-- [ ] Validar atrás/adelante y recarga directa.
-- [ ] Validar desmontaje y ausencia de MFEs duplicados.
+- [x] Validar navegación entre Dashboard y Settings.
+- [x] Validar cambio y persistencia del tema.
+- [x] Validar atrás/adelante y recarga directa.
+- [x] Validar desmontaje y ausencia de MFEs duplicados.
+
+### Resultado de implementación T-32 (2026-09-17)
+
+- Añadido Playwright como runner de smoke tests end-to-end.
+- Configurado el arranque automático de los servidores mediante `pnpm dev`.
+- Cubierta la navegación entre Dashboard y Settings.
+- Cubiertos cambio de tema, propagación al Dashboard y persistencia tras recarga.
+- Cubiertos atrás/adelante, rutas 404 y regreso al Dashboard.
+- Verificado que no quedan MFEs duplicados y que la vista 404 no mantiene un MFE montado.
+- El smoke test detectó y permitió corregir una carrera de renderizado al volver desde 404: el shell espera `updateComplete` antes de buscar el contenedor del MFE.
+
+Ejecución validada:
+
+```text
+4 smoke tests passed
+```
+
+**Estado:** T-32 completado. Fase 5 de Quality & Reliability completada.
 
 ### Fase 6: Runtime Contracts (16h)
 

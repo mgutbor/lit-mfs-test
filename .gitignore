@@ -33,5 +33,9 @@ pnpm-debug.log*
 # Test coverage
 coverage/
 
+# Playwright artifacts
+test-results/
+playwright-report/
+
 # TypeScript
 *.tsbuildinfo

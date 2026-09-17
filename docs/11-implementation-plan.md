@@ -134,7 +134,9 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 | T-39 | Añadir observabilidad del runtime | 3h | T-31, T-35 |
 | T-40 | Decidir aislamiento de MFEs no confiables | 3h | T-36, T-38 |
 
-**Estado actual:** Pendiente.
+**Estado actual:** En progreso. T-37 completado; T-38, T-39 y T-40 pendientes.
+
+**Resultado T-37:** configuración, theming y runtime de MFEs se han extraído de `app-shell.ts` a módulos independientes, manteniendo los contratos públicos y añadiendo regresiones unitarias.
 
 ## Camino crítico
 

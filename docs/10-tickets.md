@@ -1961,10 +1961,16 @@ Ejecución validada:
 
 **Horas:** 5h · **Dependencias:** T-31, T-33
 
-- [ ] Extraer gestión de configuración, tema y runtime de MFEs.
-- [ ] Mantener `app-shell.ts` centrado en layout y composición.
-- [ ] Preservar los contratos públicos existentes.
-- [ ] Añadir tests de regresión antes de eliminar duplicidades.
+- [x] Extraer gestión de configuración, tema y runtime de MFEs.
+- [x] Mantener `app-shell.ts` centrado en layout y composición.
+- [x] Preservar los contratos públicos existentes.
+- [x] Añadir tests de regresión antes de eliminar duplicidades.
+
+**Resultado:** `config-manager.ts` centraliza la carga y resolución del `config-map`, `theme-manager.ts` encapsula persistencia, tokens y propagación del tema, y `mfe-runtime.ts` coordina carga, cancelación, carreras y cleanup. `app-shell.ts` conserva la composición visual y la navegación sin cambiar el contrato de `mount` ni `MfeContext`.
+
+**Tests añadidos:** regresiones para configuración, propagación de tema y descarte de cargas obsoletas.
+
+**Estado:** T-37 completado. Fase 7 en progreso.
 
 #### T-38: Completar headers de seguridad de producción
 

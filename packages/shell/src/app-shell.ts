@@ -1,19 +1,13 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import type { ConfigMap, MfeConfig } from '@lit-mf/shared';
-import { createEventBus, createNamespacedStorage, getThemeTokens } from '@lit-mf/shared';
-import { loadMFE, unloadAllMfes, unloadMFE } from './mfe-loader';
-import { getInitialPath, resolveRoute, type RouteMatch } from './router';
-import { validateEvent, type ThemeChangedEvent } from './event-validator';
-import { validateConfigMap } from './config-validator';
+import type { ConfigMap } from '@lit-mf/shared';
+import { createEventBus } from '@lit-mf/shared';
+import { getInitialPath, resolveRoute } from './router';
+import { loadConfigMap, createMfeFallbackConfig } from './config-manager';
+import { createThemeManager, getInitialTheme, type Theme, applyThemeTokens } from './theme-manager';
+import { MfeRuntime } from './mfe-runtime';
 
 const eventBus = createEventBus();
-const themeStorage = createNamespacedStorage('mfe-settings');
-
-function getInitialTheme(): 'light' | 'dark' {
-  const savedTheme = themeStorage.getItem('theme');
-  return savedTheme === 'dark' ? 'dark' : 'light';
-}
 
 @customElement('lit-mf-shell')
 export class LitMfShell extends LitElement {
@@ -82,64 +76,35 @@ export class LitMfShell extends LitElement {
   private routeNotFound = false;
 
   @state()
-  currentTheme: 'light' | 'dark' = getInitialTheme();
+  currentTheme: Theme = getInitialTheme();
 
   private configMap: ConfigMap | null = null;
 
-  private cleanupMfe: (() => void) | null = null;
+  private readonly themeManager = createThemeManager(
+    this,
+    eventBus,
+    (theme) => {
+      this.currentTheme = theme;
+      this.updateMountedMfeTheme(theme);
+    },
+  );
 
-  private currentMfeSpecifier: string | null = null;
-
-  private loadRequestId = 0;
+  private readonly mfeRuntime = new MfeRuntime({
+    getContainer: () => this.shadowRoot?.querySelector('#mfe-container') ?? null,
+    waitForRender: () => this.updateComplete,
+  });
 
   private unsubscribeTheme?: () => void;
-
-  private mfeConfigKeys: Record<string, string> = {
-    '@lit-mf/dashboard': 'mfe-dashboard',
-    '@lit-mf/settings': 'mfe-settings',
-  };
 
   private handlePopState = () => {
     void this.syncRouteFromLocation(false);
   };
 
   async firstUpdated() {
-    this.applyThemeTokens();
+    applyThemeTokens(this, this.currentTheme);
     window.addEventListener('popstate', this.handlePopState);
-    await this.loadConfigMap();
-    this.subscribeToEvents();
-    await this.syncRouteFromLocation(true);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('popstate', this.handlePopState);
-    this.unsubscribeTheme?.();
-    this.unloadCurrentMfe();
-  }
-
-  private subscribeToEvents() {
-    this.unsubscribeTheme = eventBus.subscribe('mfe-settings:theme-changed', (data) => {
-      if (!validateEvent('mfe-settings:theme-changed', data)) {
-        console.warn('Rejected invalid event: mfe-settings:theme-changed');
-        return;
-      }
-
-      const { theme } = data as ThemeChangedEvent;
-      this.currentTheme = theme;
-      this.applyThemeTokens();
-      this.updateMountedMfeTheme(theme);
-      eventBus.publish('shell:theme-changed', { theme });
-    });
-  }
-
-  private async loadConfigMap() {
     try {
-      const response = await fetch('/config-map.json');
-      if (!response.ok) {
-        throw new Error(`Failed to load config map: ${response.status}`);
-      }
-      this.configMap = validateConfigMap(await response.json());
+      this.configMap = await loadConfigMap();
     } catch (error) {
       console.error('Error loading config map:', error);
       this.configMap = {
@@ -147,13 +112,15 @@ export class LitMfShell extends LitElement {
         baseUrl: '',
       };
     }
+    this.unsubscribeTheme = this.themeManager.subscribe();
+    await this.syncRouteFromLocation(true);
   }
 
-  private getMfeConfig(mfeSpecifier: string): MfeConfig | undefined {
-    if (!this.configMap) return undefined;
-    const configKey = this.mfeConfigKeys[mfeSpecifier];
-    if (!configKey) return undefined;
-    return this.configMap[configKey as keyof ConfigMap] as MfeConfig | undefined;
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('popstate', this.handlePopState);
+    this.unsubscribeTheme?.();
+    this.mfeRuntime.unload();
   }
 
   private async syncRouteFromLocation(replaceRoot: boolean) {
@@ -163,7 +130,7 @@ export class LitMfShell extends LitElement {
     if (!route) {
       this.currentRoute = path;
       this.routeNotFound = true;
-      this.unloadCurrentMfe();
+      this.mfeRuntime.unload();
       return;
     }
 
@@ -176,47 +143,18 @@ export class LitMfShell extends LitElement {
     await this.loadMfe(route);
   }
 
-  private async loadMfe(route: RouteMatch) {
-    const requestId = ++this.loadRequestId;
-    this.unloadCurrentMfe();
-    await this.updateComplete;
-
-    const container = this.shadowRoot?.querySelector('#mfe-container');
-    if (!container) {
-      console.error('MFE container not found');
-      return;
-    }
-
-    const mfeConfig = this.getMfeConfig(route.mfe);
-
+  private async loadMfe(route: { mfe: string; route: string; subpath: string }) {
     const context = {
       locale: 'es',
       theme: this.currentTheme,
       route: route.route,
-      config: mfeConfig ?? {
-        name: route.mfe,
-        baseUrl: this.configMap?.baseUrl ?? '',
-        endpoints: {},
-      },
+      config: createMfeFallbackConfig(this.configMap, route.mfe),
       onNavigate: (path: string) => this.navigate(path),
       publish: eventBus.publish,
       subscribe: eventBus.subscribe,
     };
 
-    const cleanup = await loadMFE(
-      route.mfe,
-      container as HTMLElement,
-      context,
-      { retries: 2, retryDelay: 1000, timeout: 10000 },
-    );
-
-    if (requestId !== this.loadRequestId) {
-      cleanup();
-      return;
-    }
-
-    this.cleanupMfe = cleanup;
-    this.currentMfeSpecifier = route.mfe;
+    await this.mfeRuntime.load(route, context);
   }
 
   private updateMountedMfeTheme(theme: 'light' | 'dark') {
@@ -228,26 +166,6 @@ export class LitMfShell extends LitElement {
     }
   }
 
-  private applyThemeTokens() {
-    const tokens = getThemeTokens(this.currentTheme);
-    Object.entries(tokens).forEach(([property, value]) => {
-      this.style.setProperty(property, value);
-    });
-  }
-
-  private unloadCurrentMfe() {
-    unloadAllMfes();
-
-    if (this.currentMfeSpecifier) {
-      unloadMFE(this.currentMfeSpecifier);
-      this.currentMfeSpecifier = null;
-      this.cleanupMfe = null;
-      return;
-    }
-
-    this.cleanupMfe?.();
-    this.cleanupMfe = null;
-  }
 
   private navigate(path: string, replace = false) {
     const route = resolveRoute(path);
@@ -258,7 +176,7 @@ export class LitMfShell extends LitElement {
     if (!route) {
       this.currentRoute = targetPath;
       this.routeNotFound = true;
-      this.unloadCurrentMfe();
+      this.mfeRuntime.unload();
       return;
     }
 

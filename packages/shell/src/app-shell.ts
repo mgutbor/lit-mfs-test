@@ -5,6 +5,7 @@ import { createEventBus, createNamespacedStorage, getThemeTokens } from '@lit-mf
 import { loadMFE, unloadAllMfes, unloadMFE } from './mfe-loader';
 import { getInitialPath, resolveRoute, type RouteMatch } from './router';
 import { validateEvent, type ThemeChangedEvent } from './event-validator';
+import { validateConfigMap } from './config-validator';
 
 const eventBus = createEventBus();
 const themeStorage = createNamespacedStorage('mfe-settings');
@@ -138,7 +139,7 @@ export class LitMfShell extends LitElement {
       if (!response.ok) {
         throw new Error(`Failed to load config map: ${response.status}`);
       }
-      this.configMap = await response.json();
+      this.configMap = validateConfigMap(await response.json());
     } catch (error) {
       console.error('Error loading config map:', error);
       this.configMap = {

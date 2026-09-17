@@ -1903,10 +1903,23 @@ Ejecución validada:
 
 **Horas:** 4h · **Dependencias:** T-29
 
-- [ ] Validar estructura, versión y secciones de cada MFE.
-- [ ] Validar endpoints, métodos y timeouts.
-- [ ] Rechazar configuraciones incompletas o malformadas.
-- [ ] Restringir orígenes a una allowlist por entorno.
+- [x] Validar estructura, versión y secciones de cada MFE.
+- [x] Validar endpoints, métodos y timeouts.
+- [x] Rechazar configuraciones incompletas o malformadas.
+- [x] Restringir orígenes a una allowlist por entorno.
+
+### Resultado de implementación T-34 (2026-09-17)
+
+- Añadido `packages/shell/src/config-validator.ts`.
+- El shell valida el JSON antes de inyectarlo en el contexto de los MFEs.
+- Se validan versión, secciones obligatorias, nombre, `baseUrl`, endpoints, métodos HTTP, headers y timeouts.
+- Los endpoints solo pueden ser rutas relativas; se rechazan URLs absolutas dentro del endpoint.
+- Los `baseUrl` deben usar HTTP(S) y pertenecer a una allowlist explícita; por defecto se permite `https://dummyjson.com`.
+- Las configuraciones inválidas se rechazan de forma completa y el shell usa un fallback sin configuraciones de MFE.
+- La allowlist puede cambiarse por entorno mediante las opciones de `validateConfigMap()`.
+- Añadidos tests para configuración válida, secciones ausentes, orígenes no autorizados, métodos y timeouts inválidos.
+
+**Estado:** T-34 completado. Fase 6 en progreso.
 
 #### T-35: Crear un API client compartido
 

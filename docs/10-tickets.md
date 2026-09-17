@@ -1813,10 +1813,20 @@ Las siguientes fases amplían el POC ya completado. Sus tickets son propuestas p
 
 **Horas:** 4h · **Dependencias:** T-29
 
-- [ ] Cubrir rutas válidas, subrutas, raíz y 404.
-- [ ] Cubrir namespace, lectura, escritura y eliminación de storage.
-- [ ] Cubrir eventos válidos, inválidos y desconocidos.
-- [ ] Cubrir contratos de tipos críticos.
+- [x] Cubrir rutas válidas, subrutas, raíz y 404.
+- [x] Cubrir namespace, lectura, escritura y eliminación de storage.
+- [x] Cubrir eventos válidos, inválidos y desconocidos.
+- [x] Cubrir contratos de tipos críticos.
+
+### Resultado de implementación T-30 (2026-09-17)
+
+- Añadidos tests unitarios para `resolveRoute()`, incluyendo raíz, Dashboard, subrutas, Settings con trailing slash y 404.
+- Añadidos tests para `createNamespacedStorage()`, incluyendo aislamiento entre MFEs y ciclo de lectura, escritura y eliminación.
+- Añadidos tests para el event bus, incluyendo publicación, suscripción y cleanup.
+- Añadida cobertura para `validateEvent()` con payloads válidos, inválidos y eventos desconocidos.
+- El runner ejecuta 12 tests en 4 archivos sin depender de APIs de `URLPattern` o DOM presentes en el navegador real.
+
+**Estado:** T-30 completado. Fase 5 en progreso.
 
 #### T-31: Hacer robusto el ciclo de vida del loader
 

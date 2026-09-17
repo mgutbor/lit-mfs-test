@@ -1824,7 +1824,7 @@ Las siguientes fases amplían el POC ya completado. Sus tickets son propuestas p
 - Añadidos tests para `createNamespacedStorage()`, incluyendo aislamiento entre MFEs y ciclo de lectura, escritura y eliminación.
 - Añadidos tests para el event bus, incluyendo publicación, suscripción y cleanup.
 - Añadida cobertura para `validateEvent()` con payloads válidos, inválidos y eventos desconocidos.
-- El runner ejecuta 12 tests en 4 archivos sin depender de APIs de `URLPattern` o DOM presentes en el navegador real.
+- El runner ejecuta 17 tests en 5 archivos; los tests del loader usan `jsdom` y una importación inyectable para aislar el runtime dinámico.
 
 **Estado:** T-30 completado. Fase 5 en progreso.
 
@@ -1832,10 +1832,21 @@ Las siguientes fases amplían el POC ya completado. Sus tickets son propuestas p
 
 **Horas:** 5h · **Dependencias:** T-29
 
-- [ ] Cancelar cargas obsoletas cuando cambia la ruta.
-- [ ] Evitar que una carga antigua monte un MFE después de otra navegación.
-- [ ] Limpiar timeouts de imports completados o fallidos.
-- [ ] Cubrir retries, timeout, mount fallido y cleanup.
+- [x] Cancelar cargas obsoletas cuando cambia la ruta.
+- [x] Evitar que una carga antigua monte un MFE después de otra navegación.
+- [x] Limpiar timeouts de imports completados o fallidos.
+- [x] Cubrir retries, timeout, mount fallido y cleanup.
+
+### Resultado de implementación T-31 (2026-09-17)
+
+- `mfe-loader` cancela las operaciones pendientes mediante `unloadMFE()` y `unloadAllMfes()`.
+- Las cargas canceladas no montan el MFE cuando la importación termina tarde.
+- Los timeouts de importación se limpian tanto al completar como al fallar.
+- Los retries respetan la cancelación y no dejan timers activos.
+- `app-shell` invalida cargas anteriores al cambiar de ruta y no registra como activa una respuesta obsoleta.
+- Se han añadido tests para éxito, retry, timeout, cancelación, mount fallido y cleanup.
+
+**Estado:** T-31 completado. Fase 5 en progreso.
 
 #### T-32: Añadir smoke tests end-to-end
 

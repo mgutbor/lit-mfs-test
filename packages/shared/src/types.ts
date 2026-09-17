@@ -35,6 +35,9 @@ export interface EventBus {
 }
 
 export interface MfeModule {
-  mount: (container: HTMLElement, context: MfeContext) => { unmount: () => void };
+  mount: (
+    container: HTMLElement,
+    context: MfeContext,
+  ) => (() => void) | { unmount: () => void };
   unmount?: () => void;
 }

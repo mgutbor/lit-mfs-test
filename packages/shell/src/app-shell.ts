@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import type { ConfigMap, MfeConfig } from '@lit-mf/shared';
 import { createEventBus, createNamespacedStorage, getThemeTokens } from '@lit-mf/shared';
-import { loadMFE, unloadMFE } from './mfe-loader';
+import { loadMFE, unloadAllMfes, unloadMFE } from './mfe-loader';
 import { getInitialPath, resolveRoute, type RouteMatch } from './router';
 import { validateEvent, type ThemeChangedEvent } from './event-validator';
 
@@ -89,6 +89,8 @@ export class LitMfShell extends LitElement {
 
   private currentMfeSpecifier: string | null = null;
 
+  private loadRequestId = 0;
+
   private unsubscribeTheme?: () => void;
 
   private mfeConfigKeys: Record<string, string> = {
@@ -174,6 +176,7 @@ export class LitMfShell extends LitElement {
   }
 
   private async loadMfe(route: RouteMatch) {
+    const requestId = ++this.loadRequestId;
     this.unloadCurrentMfe();
 
     const container = this.shadowRoot?.querySelector('#mfe-container');
@@ -198,12 +201,19 @@ export class LitMfShell extends LitElement {
       subscribe: eventBus.subscribe,
     };
 
-    this.cleanupMfe = await loadMFE(
+    const cleanup = await loadMFE(
       route.mfe,
       container as HTMLElement,
       context,
-      { retries: 2, retryDelay: 1000, timeout: 10000 }
+      { retries: 2, retryDelay: 1000, timeout: 10000 },
     );
+
+    if (requestId !== this.loadRequestId) {
+      cleanup();
+      return;
+    }
+
+    this.cleanupMfe = cleanup;
     this.currentMfeSpecifier = route.mfe;
   }
 
@@ -224,6 +234,8 @@ export class LitMfShell extends LitElement {
   }
 
   private unloadCurrentMfe() {
+    unloadAllMfes();
+
     if (this.currentMfeSpecifier) {
       unloadMFE(this.currentMfeSpecifier);
       this.currentMfeSpecifier = null;

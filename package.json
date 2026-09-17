@@ -14,10 +14,15 @@
     "build:dashboard": "pnpm --filter mfe-dashboard build",
     "build:settings": "pnpm --filter mfe-settings build",
     "build:shell": "pnpm --filter shell build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "clean": "pnpm -r exec rm -rf dist node_modules"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^5.0.1",
     "concurrently": "^9.1.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vitest": "^5.0.1"
   }
 }

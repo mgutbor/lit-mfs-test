@@ -108,7 +108,9 @@ Plan detallado para la implementación del proyecto Lit Microfrontends, basado e
 | T-31 | Robustecer ciclo de vida del loader | 5h | T-29 |
 | T-32 | Smoke tests end-to-end | 6h | T-30, T-31 |
 
-**Estado actual:** Pendiente.
+**Estado actual:** En progreso. T-29 completado; T-30 a T-32 pendientes.
+
+**Entregable T-29:** Vitest configurado con cobertura V8, comandos de workspace, smoke test y pipeline de CI.
 
 ## Fase 6: Runtime Contracts (16h) — Semana 7
 

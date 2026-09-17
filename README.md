@@ -9,6 +9,7 @@ Arquitectura de microfrontends basada en Lit 3 y Import Maps nativos del navegad
 - **Vite** — Library mode para generar ESM bundles de cada MFE
 - **URLPattern** — API nativa del navegador para matching de rutas
 - **pnpm workspaces** — Gestión del monorepo
+- **Vitest** — Runner de tests y cobertura V8
 
 ## Arquitectura
 
@@ -65,6 +66,21 @@ pnpm --filter mfe-settings dev
 ```
 
 Cada MFE corre en su propio puerto (shell: 5173, dashboard: 5174, settings: 5175). El import map del shell apunta a `localhost` en desarrollo.
+
+## Tests
+
+```bash
+# Ejecutar tests una vez
+pnpm test
+
+# Ejecutar tests en modo watch
+pnpm test:watch
+
+# Ejecutar tests con cobertura V8
+pnpm test:coverage
+```
+
+Los tests se localizan en `tests/**/*.test.ts` y `packages/**/*.test.ts`. El pipeline de CI ejecuta la cobertura y el build mediante `.github/workflows/ci.yml`.
 
 ## Producción
 

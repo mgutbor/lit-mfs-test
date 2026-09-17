@@ -1738,7 +1738,7 @@ Verificar que todas las medidas de seguridad funcionan y documentar el estado fi
 
 | Fase | Horas | Estado |
 |------|-------|--------|
-| Fase 5: Quality & Reliability | 18h | Pendiente |
+| Fase 5: Quality & Reliability | 18h | En progreso (T-29 ✅) |
 | Fase 6: Runtime Contracts | 16h | Pendiente |
 | Fase 7: Production Readiness | 15h | Pendiente |
 | **Extensión posterior al POC** | **49h** | |
@@ -1793,10 +1793,21 @@ Las siguientes fases amplían el POC ya completado. Sus tickets son propuestas p
 
 **Horas:** 3h · **Dependencias:** T-28
 
-- [ ] Elegir runner compatible con el monorepo y Lit.
-- [ ] Configurar comandos de test por paquete.
-- [ ] Configurar cobertura y ejecución en CI.
-- [ ] Documentar la estrategia de tests.
+- [x] Elegir runner compatible con el monorepo y Lit: Vitest.
+- [x] Configurar comandos de test por paquete desde el workspace raíz.
+- [x] Configurar cobertura V8 y ejecución en CI.
+- [x] Documentar la estrategia de tests.
+
+### Resultado de implementación T-29 (2026-09-17)
+
+- Vitest se ha añadido como runner común del monorepo, aprovechando la infraestructura existente de Vite.
+- El workspace dispone de `pnpm test`, `pnpm test:watch` y `pnpm test:coverage`.
+- `vitest.config.ts` centraliza los patrones de descubrimiento, exclusiones y cobertura V8.
+- Se ha añadido un smoke test en `tests/smoke.test.ts` para verificar la ejecución de TypeScript.
+- El workflow `.github/workflows/ci.yml` ejecuta instalación reproducible, tests con cobertura y build.
+- La cobertura funcional de router, storage y eventos queda reservada para T-30.
+
+**Estado:** T-29 completado. Fase 5 en progreso.
 
 #### T-30: Añadir tests unitarios de router, storage y eventos
 
